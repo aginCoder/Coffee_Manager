@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Góc Nhỏ Cà Phê • Vũ Trụ Thức Uống & Tiệm Bánh Nhỏ</title>
+  <title>Góc Nhỏ Cà Phê • Vũ Trụ Thức Uống, Bánh Nóng & Nhạc Lofi Chill</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -86,6 +86,27 @@
     .steam-particle:nth-child(2) { animation-delay: 0.7s; }
     .steam-particle:nth-child(3) { animation-delay: 1.4s; }
 
+    /* Equalizer wave animation */
+    @keyframes eqWave {
+      0%, 100% { height: 4px; }
+      50% { height: 16px; }
+    }
+    .eq-bar {
+      width: 3px;
+      background-color: #deb72d;
+      border-radius: 999px;
+      animation: eqWave 1.2s infinite ease-in-out;
+    }
+    .eq-bar:nth-child(1) { animation-delay: 0.1s; }
+    .eq-bar:nth-child(2) { animation-delay: 0.4s; }
+    .eq-bar:nth-child(3) { animation-delay: 0.2s; }
+    .eq-bar:nth-child(4) { animation-delay: 0.6s; }
+
+    .eq-paused .eq-bar {
+      animation-play-state: paused !important;
+      height: 4px !important;
+    }
+
     /* Interactive glass cup & layered liquids */
     .glass-cup {
       border: 3px solid rgba(74, 49, 34, 0.45);
@@ -101,7 +122,7 @@
 
     /* Touch target min-height guarantee */
     .touch-btn {
-      min-height: 44px;
+      min-height: 42px;
     }
   </style>
 </head>
@@ -111,7 +132,7 @@
   <div id="gameContainer" class="w-full max-w-6xl bg-cafe-cream rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col border border-cafe-green/30 sm:border-4 min-h-[92vh] sm:min-h-[740px] relative overflow-hidden mb-14 lg:mb-0">
     
     <!-- RESPONSIVE HEADER BAR -->
-    <header class="bg-cafe-green text-cafe-cream px-3 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between shadow-md border-b-2 border-cafe-dark/40 z-20 gap-2">
+    <header class="bg-cafe-green text-cafe-cream px-3 sm:px-6 py-2 sm:py-3 flex flex-wrap items-center justify-between shadow-md border-b-2 border-cafe-dark/40 z-20 gap-2">
       
       <!-- Brand & Title -->
       <div class="flex items-center gap-2 sm:gap-3">
@@ -120,14 +141,14 @@
         </div>
         <div>
           <h1 class="font-title font-bold text-sm sm:text-lg tracking-wide flex items-center gap-1.5">
-            GÓC NHỎ <span class="text-[9px] sm:text-xs px-2 py-0.5 rounded-full bg-cafe-gold text-cafe-dark font-bold font-sans">COZY CAFE</span>
+            GÓC NHỎ <span class="text-[9px] sm:text-xs px-2 py-0.5 rounded-full bg-cafe-gold text-cafe-dark font-bold font-sans">LOFI CAFE</span>
           </h1>
-          <p class="text-[10px] sm:text-xs text-cafe-sand/80 font-sans hidden xs:block">Cà phê phin, trà trái cây & bánh nóng hổi</p>
+          <p class="text-[10px] sm:text-xs text-cafe-sand/80 font-sans hidden xs:block">Cà phê phin, bánh nướng & danh sách nhạc chill</p>
         </div>
       </div>
 
       <!-- Quick Stats & Actions -->
-      <div class="flex items-center gap-2 sm:gap-5 text-xs sm:text-sm font-semibold">
+      <div class="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm font-semibold">
         <!-- Day & Clock -->
         <div class="flex flex-col text-left">
           <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-cafe-sand/70">Thời Gian</span>
@@ -155,17 +176,62 @@
           </span>
         </div>
 
-        <!-- Quick Icon Tools -->
-        <div class="flex items-center gap-1.5 pl-1.5 sm:pl-3 border-l border-white/20">
-          <button id="btnAudioToggle" title="Bật/Tắt Nhạc Lofi" class="w-8 h-8 rounded-xl bg-cafe-dark/60 hover:bg-cafe-dark text-cafe-sand flex items-center justify-center transition active:scale-95 touch-btn">
-            <i class="fa-solid fa-volume-high text-xs sm:text-sm" id="audioIcon"></i>
-          </button>
+        <!-- Quick Recipes Book Button -->
+        <div class="flex items-center gap-1.5 pl-1.5 sm:pl-2 border-l border-white/20">
           <button id="btnOpenRecipes" title="Sổ Tay Công Thức" class="w-8 h-8 rounded-xl bg-cafe-gold hover:bg-yellow-500 text-cafe-dark font-bold flex items-center justify-center transition active:scale-95 shadow touch-btn">
             <i class="fa-solid fa-book-open text-xs sm:text-sm"></i>
           </button>
         </div>
       </div>
     </header>
+
+    <!-- INTEGRATED MUSIC PLAYER BAR (AUTOPLAY LOFI CHILL) -->
+    <div id="cafeMusicPlayer" class="bg-cafe-dark text-cafe-sand px-3 sm:px-6 py-2 flex flex-wrap items-center justify-between border-b border-black/30 gap-2 text-xs z-10 shadow-inner">
+      <!-- Track Info & Visualizer -->
+      <div class="flex items-center gap-2.5 flex-1 min-w-[200px]">
+        <div id="equalizerBox" class="flex items-end gap-0.5 h-4 w-5 shrink-0 eq-paused">
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+          <div class="eq-bar"></div>
+        </div>
+        <div class="overflow-hidden">
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] px-1.5 py-0.2 rounded bg-amber-900/60 text-amber-300 font-bold uppercase tracking-wider shrink-0" id="audioSourceBadge">LOFI MP3</span>
+            <span id="trackTitle" class="font-bold text-cafe-cream truncate text-xs sm:text-sm">Morning Coffee Lofi Chill</span>
+          </div>
+          <span id="trackArtist" class="text-[10.5px] text-cafe-sand/70 block truncate">Quán Nhỏ • Nhạc Thư Giãn</span>
+        </div>
+      </div>
+
+      <!-- Controls: Prev, Play/Pause, Next, Volume & Playlist Drawer Button -->
+      <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <button id="btnPrevTrack" title="Bài trước" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/10 hover:bg-white/20 text-cafe-sand flex items-center justify-center transition active:scale-90 touch-btn">
+          <i class="fa-solid fa-backward-step text-xs"></i>
+        </button>
+        
+        <button id="btnTogglePlay" title="Phát / Dừng" class="px-2.5 sm:px-3 h-7 sm:h-8 rounded-lg bg-cafe-gold hover:bg-yellow-500 text-cafe-dark font-bold flex items-center justify-center gap-1.5 transition active:scale-95 shadow touch-btn">
+          <i class="fa-solid fa-play text-xs" id="playIcon"></i>
+          <span class="text-[11px] font-bold hidden xs:inline" id="playStatusText">Phát Nhạc</span>
+        </button>
+
+        <button id="btnNextTrack" title="Bài kế tiếp" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/10 hover:bg-white/20 text-cafe-sand flex items-center justify-center transition active:scale-90 touch-btn">
+          <i class="fa-solid fa-forward-step text-xs"></i>
+        </button>
+
+        <!-- Volume slider -->
+        <div class="hidden sm:flex items-center gap-1.5 pl-2 border-l border-white/15">
+          <i class="fa-solid fa-volume-low text-xs text-cafe-sand/70"></i>
+          <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.7" class="w-16 sm:w-20 accent-cafe-gold cursor-pointer h-1.5 bg-black/40 rounded-lg">
+        </div>
+
+        <!-- Playlist Drawer Open Button -->
+        <button id="btnOpenPlaylist" title="Danh sách 5 bài nhạc" class="px-2.5 h-7 sm:h-8 rounded-lg bg-white/10 hover:bg-white/20 text-cafe-gold font-bold flex items-center gap-1.5 transition active:scale-95 touch-btn border border-cafe-gold/30">
+          <i class="fa-solid fa-list-music text-xs"></i>
+          <span class="text-[11px]">List Nhạc 🎵</span>
+        </button>
+      </div>
+    </div>
 
     <!-- 1. INTRO / WELCOME VIEW -->
     <div id="introScreen" class="flex-1 flex flex-col lg:flex-row items-center justify-center p-4 sm:p-8 md:p-10 gap-6 sm:gap-10 bg-cafe-cream overflow-y-auto">
@@ -204,7 +270,7 @@
         </div>
 
         <p class="text-center mt-4 text-cafe-woodDark font-bold text-xs sm:text-sm tracking-wide">
-          "Cà phê ngon, trà thơm mát, bánh ngọt dịu xoa dịu tâm hồn."
+          "Cà phê ngon, tiếng nhạc lofi dịu êm và chuyện trò vui vẻ."
         </p>
       </div>
 
@@ -212,46 +278,47 @@
       <div class="w-full lg:w-7/12 flex flex-col justify-center space-y-4 max-w-xl">
         <div>
           <h2 class="text-2xl sm:text-4xl font-title font-bold text-cafe-green tracking-wide">QUÁN NHỎ CỦA BẠN</h2>
-          <p class="text-stone-600 text-xs sm:text-sm mt-1 font-semibold">Khám phá hơn 25 món thức uống thơm ngon & bánh ngọt giòn rụm.</p>
+          <p class="text-stone-600 text-xs sm:text-sm mt-1 font-semibold">Tự động phát nhạc Lofi thư giãn khi mở quán. Hơn 25 món thức uống & bánh ngon.</p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
           <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
-            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">1</span>
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">🎵</span>
             <div>
-              <h4 class="font-bold text-stone-800">Menu 6 Phân Loại Khủng</h4>
-              <p class="text-[11px] text-stone-500">Cà phê muối/dừa, Trà sữa cheese/nướng, Trà chanh giã tay, Sinh tố bơ dừa & Bánh sừng bò.</p>
+              <h4 class="font-bold text-stone-800">Playlist Lofi Tự Phát</h4>
+              <p class="text-[11px] text-stone-500">5 bản nhạc quán cà phê du dương, tự chuyển bài, có bản synth dự phòng khi offline.</p>
             </div>
           </div>
 
           <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
-            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">2</span>
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">🍵</span>
             <div>
-              <h4 class="font-bold text-stone-800">Combo Thức Uống + Bánh</h4>
-              <p class="text-[11px] text-stone-500">Khách có thể gọi thêm bánh nướng. Phục vụ đủ cả nước và bánh sẽ nhân đôi tiền tip!</p>
+              <h4 class="font-bold text-stone-800">Menu Đồ Uống & Tủ Bánh</h4>
+              <p class="text-[11px] text-stone-500">Cà phê muối, dừa tuyết, trà chanh giã tay, sinh tố bơ dừa và croissant bơ tỏi.</p>
             </div>
           </div>
 
           <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
-            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">3</span>
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">✨</span>
             <div>
-              <h4 class="font-bold text-stone-800">Chế Độ Chill Thoải Mái</h4>
-              <p class="text-[11px] text-stone-500">Khách chờ lâu 90-140 giây, mở Sổ tay là tự động Pause, tùy chỉnh nhịp độ 0.5x, 1x, 1.5x.</p>
+              <h4 class="font-bold text-stone-800">Combo Thưởng Tip Khủng</h4>
+              <p class="text-[11px] text-stone-500">Giao đủ cả nước và bánh ngọt yêu cầu để nhận thêm tiền tip hào phóng từ khách.</p>
             </div>
           </div>
 
           <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
-            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">4</span>
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">🍃</span>
             <div>
-              <h4 class="font-bold text-stone-800">Tối Ưu Mobile & Tablet</h4>
-              <p class="text-[11px] text-stone-500">Phím bấm chuẩn ngón tay, chuyển đổi tab mượt mà, thanh công cụ dính đáy tiện lợi.</p>
+              <h4 class="font-bold text-stone-800">Khách Kiên Nhẫn & Chill</h4>
+              <p class="text-[11px] text-stone-500">Thời gian đợi 90-140 giây, mở Sổ Tay tự ngưng đọng thời gian không sợ trễ.</p>
             </div>
           </div>
         </div>
 
-        <div class="pt-1">
-          <button id="btnStartShop" class="w-full sm:w-auto px-8 py-3.5 bg-cafe-green hover:bg-cafe-dark active:scale-95 text-cafe-cream text-sm sm:text-base font-bold rounded-2xl shadow-lg transition flex items-center justify-center gap-2.5 touch-btn">
-            <span>MỞ QUÁN NGAY</span>
+        <div class="pt-2 flex flex-col sm:flex-row gap-2.5">
+          <button id="btnStartShop" class="flex-1 py-3.5 bg-cafe-green hover:bg-cafe-dark active:scale-95 text-cafe-cream text-sm sm:text-base font-bold rounded-2xl shadow-lg transition flex items-center justify-center gap-2.5 touch-btn">
+            <i class="fa-solid fa-music text-cafe-gold"></i>
+            <span>MỞ QUÁN & BẬT NHẠC NGAY</span>
             <i class="fa-solid fa-arrow-right"></i>
           </button>
         </div>
@@ -259,7 +326,7 @@
     </div>
 
     <!-- 2. MAIN GAME SCREEN -->
-    <div id="mainGameScreen" class="hidden flex-1 flex flex-col p-2 sm:p-4 gap-2.5 bg-cafe-cream overflow-hidden">
+    <div id="mainGameScreen" class="hidden flex-1 flex flex-col p-2 sm:p-4 gap-2 bg-cafe-cream overflow-hidden">
       
       <!-- Top Control Strip: Status + Speed Controller + Upgrade Button -->
       <div class="flex flex-wrap items-center justify-between bg-cafe-card p-2 sm:p-2.5 rounded-2xl border border-stone-200/90 shadow-sm gap-2">
@@ -269,7 +336,7 @@
             <i class="fa-solid fa-store"></i> Đang mở
           </span>
           <span class="text-[11px] sm:text-xs text-stone-600 font-semibold truncate max-w-[200px] xs:max-w-none" id="shiftStatusText">
-            Tiết trời ấm áp, thong thả pha chế nhé!
+            Tiết trời ấm áp, thong thả nghe nhạc và pha chế nhé!
           </span>
         </div>
 
@@ -327,7 +394,7 @@
             <div id="emptyQueueMsg" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center text-stone-400">
               <i class="fa-solid fa-mug-hot text-3xl sm:text-4xl mb-2 text-stone-300"></i>
               <p class="text-xs sm:text-sm font-semibold">Chưa có khách ghé bàn...</p>
-              <p class="text-[11px] sm:text-xs text-stone-400 mt-0.5">Khách mới sẽ sớm ghé quán. Bạn có thể mở Sổ Tay để xem công thức!</p>
+              <p class="text-[11px] sm:text-xs text-stone-400 mt-0.5">Khách mới sẽ sớm ghé quán. Bạn có thể mở Sổ Tay để tra cứu công thức!</p>
             </div>
           </div>
 
@@ -338,7 +405,7 @@
             </div>
             <div class="flex-1 overflow-hidden">
               <span class="text-[9.5px] uppercase tracking-wider text-cafe-woodDark font-bold block">Không khí quán:</span>
-              <p id="cafeDialogue" class="text-xs text-stone-700 italic font-medium truncate">"Hôm nay thèm một ly trà đào cam sả thanh mát và bánh sừng bò thơm ngậy..."</p>
+              <p id="cafeDialogue" class="text-xs text-stone-700 italic font-medium truncate">"Giai điệu lofi ấm áp kết hợp cùng tách cà phê thơm làm lòng mình nhẹ nhõm hẳn..."</p>
             </div>
           </div>
         </div>
@@ -438,7 +505,36 @@
       </button>
     </div>
 
-    <!-- 3. RECIPES MODAL (AUTO-PAUSE & RESPONSIVE FILTER) -->
+    <!-- 3. PLAYLIST DRAWER / POPUP MODAL -->
+    <div id="modalPlaylist" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
+      <div class="bg-cafe-card w-full max-w-md rounded-3xl shadow-2xl border-2 sm:border-4 border-cafe-wood/30 flex flex-col max-h-[85vh] overflow-hidden">
+        <div class="bg-cafe-green text-cafe-cream px-4 py-3 flex items-center justify-between border-b-2 border-cafe-dark/40">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-headphones-simple text-cafe-gold text-lg"></i>
+            <div>
+              <h3 class="font-title font-bold text-sm sm:text-base">PLAYLIST QUÁN CÀ PHÊ</h3>
+              <p class="text-[10px] text-cafe-sand/80">Chọn bài hát bạn yêu thích để phát lặp lại hoặc tự chuyển bài</p>
+            </div>
+          </div>
+          <button id="btnClosePlaylist" class="w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 text-cafe-cream flex items-center justify-center transition touch-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="p-3 sm:p-4 overflow-y-auto flex-1 space-y-2" id="playlistTracksContainer">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="bg-cafe-sand/40 px-4 py-2.5 border-t border-stone-200 flex justify-between items-center text-xs">
+          <span class="text-stone-500 font-semibold">Tự chuyển bài khi hết nhạc</span>
+          <button id="btnClosePlaylist2" class="px-4 py-1.5 bg-cafe-green text-white font-bold rounded-xl hover:bg-cafe-dark transition touch-btn">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. RECIPES MODAL (AUTO-PAUSE & RESPONSIVE FILTER) -->
     <div id="modalRecipes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
       <div class="bg-cafe-card w-full max-w-3xl rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-cafe-wood/30 flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden">
         
@@ -482,7 +578,7 @@
       </div>
     </div>
 
-    <!-- 4. UPGRADES SHOP MODAL -->
+    <!-- 5. UPGRADES SHOP MODAL -->
     <div id="modalUpgrades" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
       <div class="bg-cafe-card w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-cafe-wood/30 flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden">
         
@@ -516,7 +612,7 @@
       </div>
     </div>
 
-    <!-- 5. DAY SUMMARY MODAL -->
+    <!-- 6. DAY SUMMARY MODAL -->
     <div id="modalDayEnd" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4">
       <div class="bg-cafe-card w-full max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-cafe-gold/50 p-4 sm:p-6 text-center space-y-3.5">
         <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-cafe-gold/20 text-cafe-gold flex items-center justify-center text-2xl sm:text-3xl mx-auto border-2 border-cafe-gold/50">
@@ -554,7 +650,7 @@
     </div>
 
     <!-- Notification Toast floating -->
-    <div id="toastNotification" class="fixed top-14 sm:top-16 left-1/2 -translate-x-1/2 px-3.5 sm:px-4 py-2 rounded-2xl bg-cafe-dark text-cafe-cream text-xs font-bold shadow-xl border border-white/20 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2 max-w-[90vw] truncate">
+    <div id="toastNotification" class="fixed top-24 sm:top-24 left-1/2 -translate-x-1/2 px-3.5 sm:px-4 py-2 rounded-2xl bg-cafe-dark text-cafe-cream text-xs font-bold shadow-xl border border-white/20 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2 max-w-[90vw] truncate">
       <i class="fa-solid fa-circle-info text-cafe-gold"></i>
       <span id="toastMessage" class="truncate">Thông báo</span>
     </div>
@@ -562,168 +658,360 @@
   </div>
 
   <footer class="mt-2 mb-16 lg:mb-0 text-stone-400 text-[11px] font-sans text-center">
-    Góc Nhỏ Cà Phê & Tiệm Bánh • Thiết kế tối ưu cho mọi thiết bị
+    Góc Nhỏ Cà Phê • Vũ trụ thức uống & Playlist nhạc Lofi du dương
   </footer>
 
   <script>
     /* =========================================================
-       AUDIO SYSTEM (Pure Web Audio API - Lofi Chords & SFX)
+       MUSIC & AUDIO ENGINE (HYBRID: ONLINE MP3 STREAM + SYNTH FALLBACK)
        ========================================================= */
-    class SoundEngine {
+    const PLAYLIST = [
+      {
+        id: 'track1',
+        title: 'Morning Coffee Lofi Chill',
+        artist: 'Góc Nhỏ Radio • Thư Thái Ban Mai',
+        genre: 'Lofi Chill / HipHop',
+        // Stable royalty-free stream urls
+        src: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3',
+        synthProgression: [261.63, 329.63, 392.00, 493.88] // Cmaj7
+      },
+      {
+        id: 'track2',
+        title: 'Rainy Cafe Window',
+        artist: 'Góc Nhỏ Radio • Mưa Nhẹ Ngoài Khung Cửa',
+        genre: 'Piano & Soft Rain',
+        src: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=tea-time-lo-fi-chill-11440.mp3',
+        synthProgression: [220.00, 261.63, 329.63, 392.00] // Am7
+      },
+      {
+        id: 'track3',
+        title: 'Warm Cinnamon Afternoon',
+        artist: 'Góc Nhỏ Radio • Giai Điệu Nắng Ấm',
+        genre: 'Acoustic Guitar Lofi',
+        src: 'https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=chill-abstract-intention-12099.mp3',
+        synthProgression: [174.61, 220.00, 261.63, 329.63] // Fmaj7
+      },
+      {
+        id: 'track4',
+        title: 'Sunset Lavender Latte',
+        artist: 'Góc Nhỏ Radio • Chiều Tà Yên Bình',
+        genre: 'Chillhop Beats',
+        src: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=lofi-chill-medium-version-159456.mp3',
+        synthProgression: [196.00, 246.94, 293.66, 349.23] // G7
+      },
+      {
+        id: 'track5',
+        title: 'Matcha Memory Melody',
+        artist: 'Góc Nhỏ Radio • Ngọt Ngào Thanh Âm',
+        genre: 'Bossa Nova Lofi',
+        src: 'https://cdn.pixabay.com/download/audio/2023/06/13/audio_3464d6e901.mp3?filename=good-night-lofi-cozy-chill-160166.mp3',
+        synthProgression: [146.83, 174.61, 220.00, 261.63] // Dm7
+      }
+    ];
+
+    class HybridMusicPlayer {
       constructor() {
-        this.ctx = null;
-        this.muted = false;
-        this.lofiTimer = null;
+        this.audioEl = new Audio();
+        this.audioEl.crossOrigin = 'anonymous';
+        this.audioEl.preload = 'auto';
+
+        this.currentTrackIndex = 0;
+        this.isPlaying = false;
+        this.volume = 0.7;
+        this.audioEl.volume = this.volume;
+
+        // Offline Web Audio API Synth Fallback
+        this.synthCtx = null;
+        this.synthTimer = null;
+        this.isFallbackSynthActive = false;
+
+        this.setupAudioListeners();
       }
 
-      init() {
-        if (!this.ctx) {
+      setupAudioListeners() {
+        this.audioEl.addEventListener('ended', () => {
+          this.nextTrack(true);
+        });
+
+        this.audioEl.addEventListener('error', (e) => {
+          console.warn('Audio stream fallback to Procedural Synth due to network:', e);
+          this.startProceduralSynth();
+        });
+
+        this.audioEl.addEventListener('play', () => {
+          this.isPlaying = true;
+          this.stopProceduralSynth();
+          this.updateUI();
+        });
+
+        this.audioEl.addEventListener('pause', () => {
+          this.isPlaying = false;
+          this.updateUI();
+        });
+      }
+
+      initSynthContext() {
+        if (!this.synthCtx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
-          this.ctx = new AudioContext();
+          this.synthCtx = new AudioContext();
         }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
+        if (this.synthCtx && this.synthCtx.state === 'suspended') {
+          this.synthCtx.resume();
         }
       }
 
-      toggleMute() {
-        this.muted = !this.muted;
-        return this.muted;
+      getCurrentTrack() {
+        return PLAYLIST[this.currentTrackIndex];
       }
 
-      playCoin() {
-        if (this.muted) return;
-        this.init();
+      setVolume(val) {
+        this.volume = Math.max(0, Math.min(1, val));
+        this.audioEl.volume = this.volume;
+      }
+
+      playTrack(index) {
+        if (index >= 0 && index < PLAYLIST.length) {
+          this.currentTrackIndex = index;
+        }
+
+        const track = this.getCurrentTrack();
+        this.initSynthContext();
+
+        this.audioEl.src = track.src;
+        this.audioEl.load();
+
+        const playPromise = this.audioEl.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            this.isPlaying = true;
+            this.isFallbackSynthActive = false;
+            this.updateUI();
+          }).catch(err => {
+            console.log('Stream blocked or offline, launching Procedural Lofi Synth fallback');
+            this.startProceduralSynth();
+          });
+        }
+      }
+
+      togglePlay() {
+        this.initSynthContext();
+        if (this.isPlaying || this.isFallbackSynthActive) {
+          this.pause();
+        } else {
+          this.playTrack(this.currentTrackIndex);
+        }
+      }
+
+      pause() {
+        this.audioEl.pause();
+        this.stopProceduralSynth();
+        this.isPlaying = false;
+        this.updateUI();
+      }
+
+      nextTrack(isAuto = false) {
+        this.currentTrackIndex = (this.currentTrackIndex + 1) % PLAYLIST.length;
+        this.playTrack(this.currentTrackIndex);
+        if (!isAuto) showToast(`Chuyển bài: ${this.getCurrentTrack().title}`);
+      }
+
+      prevTrack() {
+        this.currentTrackIndex = (this.currentTrackIndex - 1 + PLAYLIST.length) % PLAYLIST.length;
+        this.playTrack(this.currentTrackIndex);
+        showToast(`Chuyển bài: ${this.getCurrentTrack().title}`);
+      }
+
+      // Procedural Synth Backup for offline play
+      startProceduralSynth() {
+        this.initSynthContext();
+        this.stopProceduralSynth();
+        this.isFallbackSynthActive = true;
+        this.isPlaying = true;
+
+        const track = this.getCurrentTrack();
+        const baseChords = [
+          track.synthProgression,
+          [220.00, 261.63, 329.63, 392.00],
+          [174.61, 220.00, 261.63, 329.63],
+          [196.00, 246.94, 293.66, 349.23]
+        ];
+
+        let chordStep = 0;
+        this.synthTimer = setInterval(() => {
+          if (!this.synthCtx || !this.isFallbackSynthActive) return;
+          try {
+            const chord = baseChords[chordStep % baseChords.length];
+            chordStep++;
+            const now = this.synthCtx.currentTime;
+
+            chord.forEach((freq, idx) => {
+              const osc = this.synthCtx.createOscillator();
+              const gain = this.synthCtx.createGain();
+              osc.type = 'sine';
+              osc.frequency.setValueAtTime(freq, now + (idx * 0.08));
+
+              const maxGain = 0.03 * this.volume;
+              gain.gain.setValueAtTime(0.0001, now + (idx * 0.08));
+              gain.gain.exponentialRampToValueAtTime(maxGain, now + 0.6 + (idx * 0.08));
+              gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.2);
+
+              osc.connect(gain);
+              gain.connect(this.synthCtx.destination);
+
+              osc.start(now + (idx * 0.08));
+              osc.stop(now + 3.3);
+            });
+          } catch(e) {}
+        }, 3400);
+
+        this.updateUI();
+      }
+
+      stopProceduralSynth() {
+        if (this.synthTimer) {
+          clearInterval(this.synthTimer);
+          this.synthTimer = null;
+        }
+        this.isFallbackSynthActive = false;
+      }
+
+      // SFX for Game Mechanics
+      playCoinSFX() {
+        this.initSynthContext();
+        if (!this.synthCtx) return;
         try {
-          const now = this.ctx.currentTime;
-          const osc1 = this.ctx.createOscillator();
-          const osc2 = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
+          const now = this.synthCtx.currentTime;
+          const osc1 = this.synthCtx.createOscillator();
+          const osc2 = this.synthCtx.createOscillator();
+          const gain = this.synthCtx.createGain();
 
           osc1.type = 'sine';
           osc2.type = 'triangle';
           osc1.frequency.setValueAtTime(987.77, now);
-          osc1.frequency.exponentialRampToValueAtTime(1318.51, now + 0.12);
+          osc1.frequency.exponentialRampToValueAtTime(1318.51, now + 0.1);
           osc2.frequency.setValueAtTime(1318.51, now);
           osc2.frequency.exponentialRampToValueAtTime(1975.53, now + 0.15);
 
-          gain.gain.setValueAtTime(0.15, now);
+          const vol = 0.16 * this.volume;
+          gain.gain.setValueAtTime(vol, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
 
           osc1.connect(gain);
           osc2.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(this.synthCtx.destination);
 
           osc1.start(now);
           osc2.start(now);
           osc1.stop(now + 0.35);
           osc2.stop(now + 0.35);
-        } catch (e) {}
+        } catch(e) {}
       }
 
-      playPour() {
-        if (this.muted) return;
-        this.init();
+      playPourSFX() {
+        this.initSynthContext();
+        if (!this.synthCtx) return;
         try {
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
+          const now = this.synthCtx.currentTime;
+          const osc = this.synthCtx.createOscillator();
+          const gain = this.synthCtx.createGain();
 
           osc.type = 'sine';
           osc.frequency.setValueAtTime(320 + Math.random() * 80, now);
           osc.frequency.exponentialRampToValueAtTime(560, now + 0.14);
 
-          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.setValueAtTime(0.12 * this.volume, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
 
           osc.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(this.synthCtx.destination);
 
-          osc.start(now);
-          osc.stop(now + 0.2);
-        } catch (e) {}
-      }
-
-      playPastry() {
-        if (this.muted) return;
-        this.init();
-        try {
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(600, now);
-          osc.frequency.exponentialRampToValueAtTime(820, now + 0.08);
-          gain.gain.setValueAtTime(0.1, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
           osc.start(now);
           osc.stop(now + 0.2);
         } catch(e) {}
       }
 
-      playFail() {
-        if (this.muted) return;
-        this.init();
+      playPastrySFX() {
+        this.initSynthContext();
+        if (!this.synthCtx) return;
         try {
-          const now = this.ctx.currentTime;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
+          const now = this.synthCtx.currentTime;
+          const osc = this.synthCtx.createOscillator();
+          const gain = this.synthCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(820, now + 0.08);
+          gain.gain.setValueAtTime(0.12 * this.volume, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.connect(gain);
+          gain.connect(this.synthCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } catch(e) {}
+      }
+
+      playFailSFX() {
+        this.initSynthContext();
+        if (!this.synthCtx) return;
+        try {
+          const now = this.synthCtx.currentTime;
+          const osc = this.synthCtx.createOscillator();
+          const gain = this.synthCtx.createGain();
 
           osc.type = 'sawtooth';
           osc.frequency.setValueAtTime(220, now);
           osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
 
-          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.setValueAtTime(0.09 * this.volume, now);
           gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
 
           osc.connect(gain);
-          gain.connect(this.ctx.destination);
+          gain.connect(this.synthCtx.destination);
 
           osc.start(now);
           osc.stop(now + 0.3);
-        } catch (e) {}
+        } catch(e) {}
       }
 
-      startLofiAmbient() {
-        if (this.lofiTimer) return;
-        const chords = [
-          [261.63, 329.63, 392.00, 493.88], // Cmaj7
-          [220.00, 261.63, 329.63, 392.00], // Am7
-          [174.61, 220.00, 261.63, 329.63], // Fmaj7
-          [196.00, 246.94, 293.66, 349.23]  // G7
-        ];
-        let chordIdx = 0;
+      updateUI() {
+        const track = this.getCurrentTrack();
+        const titleEl = document.getElementById('trackTitle');
+        const artistEl = document.getElementById('trackArtist');
+        const playIcon = document.getElementById('playIcon');
+        const playStatusText = document.getElementById('playStatusText');
+        const eqBox = document.getElementById('equalizerBox');
+        const sourceBadge = document.getElementById('audioSourceBadge');
 
-        this.lofiTimer = setInterval(() => {
-          if (this.muted || !this.ctx) return;
-          try {
-            const chord = chords[chordIdx % chords.length];
-            chordIdx++;
-            const now = this.ctx.currentTime;
-            chord.forEach((freq, i) => {
-              const osc = this.ctx.createOscillator();
-              const gain = this.ctx.createGain();
-              osc.type = 'sine';
-              osc.frequency.value = freq;
+        if (titleEl) titleEl.textContent = track.title;
+        if (artistEl) artistEl.textContent = track.artist;
 
-              gain.gain.setValueAtTime(0.001, now + (i * 0.05));
-              gain.gain.exponentialRampToValueAtTime(0.016, now + 0.8 + (i * 0.05));
-              gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.4);
+        const active = this.isPlaying || this.isFallbackSynthActive;
+        if (playIcon) {
+          playIcon.className = active ? 'fa-solid fa-pause text-xs' : 'fa-solid fa-play text-xs';
+        }
+        if (playStatusText) {
+          playStatusText.textContent = active ? 'Đang Phát' : 'Phát Nhạc';
+        }
 
-              osc.connect(gain);
-              gain.connect(this.ctx.destination);
+        if (eqBox) {
+          if (active) eqBox.classList.remove('eq-paused');
+          else eqBox.classList.add('eq-paused');
+        }
 
-              osc.start(now + (i * 0.05));
-              osc.stop(now + 3.5);
-            });
-          } catch(e) {}
-        }, 4200);
+        if (sourceBadge) {
+          if (this.isFallbackSynthActive) {
+            sourceBadge.textContent = 'LOFI SYNTH';
+            sourceBadge.className = 'text-[10px] px-1.5 py-0.2 rounded bg-emerald-900/60 text-emerald-300 font-bold uppercase tracking-wider shrink-0';
+          } else {
+            sourceBadge.textContent = 'LOFI MP3';
+            sourceBadge.className = 'text-[10px] px-1.5 py-0.2 rounded bg-amber-900/60 text-amber-300 font-bold uppercase tracking-wider shrink-0';
+          }
+        }
+
+        renderPlaylistDrawer();
       }
     }
 
-    const sound = new SoundEngine();
+    const musicPlayer = new HybridMusicPlayer();
 
     /* =========================================================
        INGREDIENTS DATABASE (5 CATEGORIES)
@@ -815,13 +1103,13 @@
     ];
 
     const CUSTOMER_PROFILES = [
-      { name: 'Anh Nam công sở', avatar: '👨‍💼', desc: 'Cần sự tỉnh táo trước cuộc họp với sếp.', patienceBase: 110 },
-      { name: 'Bé Linh GenZ', avatar: '👩‍🎤', desc: 'Thích đồ uống hot trend check-in sống ảo.', patienceBase: 95 },
+      { name: 'Anh Nam công sở', avatar: '👨‍💼', desc: 'Cần sự tỉnh táo trước cuộc họp với sếp.', patienceBase: 115 },
+      { name: 'Bé Linh GenZ', avatar: '👩‍🎤', desc: 'Thích đồ uống hot trend check-in sống ảo.', patienceBase: 100 },
       { name: 'Chú Ba hưu trí', avatar: '👴', desc: 'Ngồi ngắm phố phường, mê cà phê phin mộc.', patienceBase: 140 },
-      { name: 'Chị Mai thiết kế', avatar: '👩‍💻', desc: 'Deadline dí, cần combo nước thanh mát kèm bánh.', patienceBase: 100 },
-      { name: 'Em Quân học sinh', avatar: '👦', desc: 'Hảo ngọt, cuồng trà sữa trân châu và bánh sừng bò.', patienceBase: 90 },
-      { name: 'Cô Lan sành ăn', avatar: '👵', desc: 'Rất kĩ tính nhưng hào phóng tiền tip nếu pha chuẩn.', patienceBase: 125 },
-      { name: 'Huấn luyện viên Hải', avatar: '🏋️‍♂️', desc: 'Ưa chuộng thức uống detox khỏe khoắn.', patienceBase: 120 },
+      { name: 'Chị Mai thiết kế', avatar: '👩‍💻', desc: 'Deadline dí, cần combo nước thanh mát kèm bánh.', patienceBase: 105 },
+      { name: 'Em Quân học sinh', avatar: '👦', desc: 'Hảo ngọt, cuồng trà sữa trân châu và bánh sừng bò.', patienceBase: 95 },
+      { name: 'Cô Lan sành ăn', avatar: '👵', desc: 'Rất kĩ tính nhưng hào phóng tiền tip nếu pha chuẩn.', patienceBase: 130 },
+      { name: 'Huấn luyện viên Hải', avatar: '🏋️‍♂️', desc: 'Ưa chuộng thức uống detox khỏe khoắn.', patienceBase: 125 },
       { name: 'Bạn An mọt sách', avatar: '🧑‍🏫', desc: 'Tìm góc yên ả nhâm nhi trà hoa cúc mật ong.', patienceBase: 135 }
     ];
 
@@ -851,7 +1139,7 @@
 
       currentTab: 'base',
       currentRecipeFilter: 'all',
-      mobileActiveView: 'crafting', // 'crafting' or 'queue'
+      mobileActiveView: 'crafting',
 
       upgrades: {
         autoRegister: false,
@@ -922,7 +1210,51 @@
       setTimeout(() => {
         toast.classList.remove('opacity-100');
         toast.classList.add('opacity-0', 'pointer-events-none');
-      }, 2000);
+      }, 2200);
+    }
+
+    function renderPlaylistDrawer() {
+      const container = document.getElementById('playlistTracksContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      PLAYLIST.forEach((track, index) => {
+        const isCurrent = (index === musicPlayer.currentTrackIndex);
+        const isPlaying = isCurrent && (musicPlayer.isPlaying || musicPlayer.isFallbackSynthActive);
+
+        const card = document.createElement('div');
+        card.className = `p-2.5 sm:p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-2.5 ${
+          isCurrent 
+            ? 'bg-amber-100/90 border-cafe-accent ring-2 ring-cafe-accent/30 shadow-sm' 
+            : 'bg-white hover:bg-stone-50 border-stone-200'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex items-center gap-2.5 truncate">
+            <div class="w-8 h-8 rounded-xl ${isCurrent ? 'bg-cafe-accent text-white' : 'bg-stone-100 text-stone-600'} flex items-center justify-center font-bold text-xs shrink-0 shadow-inner">
+              ${isPlaying ? '<i class="fa-solid fa-volume-high animate-bounce"></i>' : (index + 1)}
+            </div>
+            <div class="truncate">
+              <h4 class="font-bold text-xs text-stone-800 truncate">${track.title}</h4>
+              <p class="text-[10px] text-stone-500 truncate">${track.artist} • <span class="text-cafe-green font-semibold">${track.genre}</span></p>
+            </div>
+          </div>
+          <div class="shrink-0 flex items-center gap-1.5">
+            ${isCurrent ? '<span class="text-[9px] bg-cafe-green text-cafe-cream px-2 py-0.5 rounded-full font-bold">Đang chọn</span>' : ''}
+            <i class="fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'} text-stone-400 hover:text-stone-800 text-xs p-1"></i>
+          </div>
+        `;
+
+        card.onclick = () => {
+          if (isCurrent) {
+            musicPlayer.togglePlay();
+          } else {
+            musicPlayer.playTrack(index);
+          }
+        };
+
+        container.appendChild(card);
+      });
     }
 
     function renderIngredientGrid() {
@@ -983,14 +1315,14 @@
     }
 
     function selectPastry(pKey) {
-      sound.playPastry();
+      musicPlayer.playPastrySFX();
       GameState.currentPastry = (GameState.currentPastry === pKey) ? null : pKey;
       renderCupAndPlatePreview();
       renderIngredientGrid();
     }
 
     function toggleIngredient(ingId) {
-      sound.playPour();
+      musicPlayer.playPourSFX();
       const idx = GameState.currentCup.indexOf(ingId);
       if (idx > -1) {
         GameState.currentCup.splice(idx, 1);
@@ -1274,7 +1606,7 @@
       const isPastryCorrect = requiresPastry ? (GameState.currentPastry === customer.pastry.id) : (GameState.currentPastry === null);
 
       if (isDrinkCorrect && isPastryCorrect) {
-        sound.playCoin();
+        musicPlayer.playCoinSFX();
 
         const patiencePct = customer.currentPatience / customer.maxPatience;
         let tip = 0;
@@ -1312,7 +1644,7 @@
         saveState();
 
       } else {
-        sound.playFail();
+        musicPlayer.playFailSFX();
         GameState.reputation = Math.max(1.0, GameState.reputation - 0.2);
 
         if (!isDrinkCorrect && !isPastryCorrect) {
@@ -1342,7 +1674,7 @@
         cust.currentPatience -= (0.5 * GameState.gameSpeed);
 
         if (cust.currentPatience <= 0) {
-          sound.playFail();
+          musicPlayer.playFailSFX();
           showToast(`${cust.name} đợi lâu nên rời đi! (-0.3 sao)`);
           document.getElementById('cafeDialogue').textContent = `"${cust.name}: Chờ lâu quá, mình có việc bận phải đi rồi..."`;
           GameState.reputation = Math.max(1.0, GameState.reputation - 0.3);
@@ -1547,7 +1879,7 @@
       if (GameState.money < upg.cost) return;
 
       GameState.money -= upg.cost;
-      sound.playCoin();
+      musicPlayer.playCoinSFX();
 
       if (upg.type === 'recipe_group') {
         upg.recipeIds.forEach(id => {
@@ -1637,19 +1969,26 @@
       document.getElementById('tabSwitchBar').onclick = () => switchMobileView('crafting');
       document.getElementById('tabSwitchQueue').onclick = () => switchMobileView('queue');
 
-      // Audio toggle
-      document.getElementById('btnAudioToggle').onclick = () => {
-        sound.init();
-        const isMuted = sound.toggleMute();
-        const icon = document.getElementById('audioIcon');
-        if (isMuted) {
-          icon.className = 'fa-solid fa-volume-xmark text-rose-300';
-          showToast('Đã tắt âm thanh');
-        } else {
-          icon.className = 'fa-solid fa-volume-high text-cafe-sand';
-          sound.startLofiAmbient();
-          showToast('Đã bật nhạc Lofi ấm áp');
-        }
+      // Music Player controls
+      document.getElementById('btnTogglePlay').onclick = () => musicPlayer.togglePlay();
+      document.getElementById('btnNextTrack').onclick = () => musicPlayer.nextTrack();
+      document.getElementById('btnPrevTrack').onclick = () => musicPlayer.prevTrack();
+
+      const volumeSlider = document.getElementById('volumeSlider');
+      if (volumeSlider) {
+        volumeSlider.oninput = (e) => musicPlayer.setVolume(parseFloat(e.target.value));
+      }
+
+      // Playlist drawer toggle
+      document.getElementById('btnOpenPlaylist').onclick = () => {
+        renderPlaylistDrawer();
+        document.getElementById('modalPlaylist').classList.remove('hidden');
+      };
+      document.getElementById('btnClosePlaylist').onclick = () => {
+        document.getElementById('modalPlaylist').classList.add('hidden');
+      };
+      document.getElementById('btnClosePlaylist2').onclick = () => {
+        document.getElementById('modalPlaylist').classList.add('hidden');
       };
 
       // Speed controller buttons
@@ -1667,22 +2006,34 @@
         };
       });
 
-      // Start button
+      // Start button with Browser Autoplay Trigger
       document.getElementById('btnStartShop').onclick = () => {
-        sound.init();
-        sound.startLofiAmbient();
+        // Trigger browser audio context unlocked by user gesture
+        musicPlayer.playTrack(0);
+
         document.getElementById('introScreen').classList.add('hidden');
         document.getElementById('mainGameScreen').classList.remove('hidden');
         GameState.isOpen = true;
         spawnCustomer();
         handleResize();
-        showToast('Quán nhỏ đã mở cửa! Chúc bạn một ngày buôn bán thuận lợi.');
+        showToast('Quán nhỏ đã mở cửa! Nhạc Lofi đang tự động phát.');
       };
+
+      // Fallback gesture to unlock audio seamlessly on any first screen touch
+      const firstTapUnlock = () => {
+        if (!musicPlayer.isPlaying && !musicPlayer.isFallbackSynthActive && GameState.isOpen) {
+          musicPlayer.playTrack(musicPlayer.currentTrackIndex);
+        }
+        window.removeEventListener('click', firstTapUnlock);
+        window.removeEventListener('touchstart', firstTapUnlock);
+      };
+      window.addEventListener('click', firstTapUnlock, { once: true });
+      window.addEventListener('touchstart', firstTapUnlock, { once: true });
 
       // Crafting actions (Desktop and Mobile Buttons)
       const handleResetCup = () => {
         if (GameState.currentCup.length === 0 && !GameState.currentPastry) return;
-        sound.playFail();
+        musicPlayer.playFailSFX();
         GameState.currentCup = [];
         GameState.currentPastry = null;
         renderCupAndPlatePreview();
@@ -1779,6 +2130,9 @@
             closeRecipeModal();
           }
         }
+        if (e.key === 'm' || e.key === 'M') {
+          musicPlayer.togglePlay();
+        }
         const num = parseInt(e.key);
         if (!isNaN(num) && num >= 1 && num <= 8) {
           if (GameState.currentTab === 'pastry') {
@@ -1792,6 +2146,7 @@
         if (e.key === 'Escape') {
           closeRecipeModal();
           document.getElementById('modalUpgrades').classList.add('hidden');
+          document.getElementById('modalPlaylist').classList.add('hidden');
         }
       });
     }
@@ -1802,6 +2157,7 @@
       renderIngredientGrid();
       renderCupAndPlatePreview();
       setupEventListeners();
+      musicPlayer.updateUI();
       handleResize();
 
       setInterval(tickGameTime, 1000);
