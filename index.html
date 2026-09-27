@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Góc Nhỏ Cà Phê • Vũ Trụ Thức Uống & Tiệm Bánh Nhỏ</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cafe: {
+              dark: '#182b21',
+              green: '#243f34',
+              forest: '#13241b',
+              sage: '#4a6759',
+              cream: '#fbf7ee',
+              sand: '#ede3cd',
+              card: '#fffdf9',
+              wood: '#82562f',
+              woodDark: '#442a14',
+              accent: '#d26625',
+              gold: '#deb72d',
+              berry: '#b93a54',
+              matcha: '#487533'
+            }
+          },
+          fontFamily: {
+            title: ['Comfortaa', 'cursive', 'sans-serif'],
+            sans: ['Quicksand', 'sans-serif']
+          },
+          screens: {
+            'xs': '420px'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Prevent zoom lag & elastic overflow on touch */
+    html, body {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #17271f;
+      font-family: 'Quicksand', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow-x: hidden;
+    }
+
+    /* Soft scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f0e5cf;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #8c6037;
+      border-radius: 999px;
+    }
+
+    /* Steam animation on coffee */
+    @keyframes steam {
+      0% { transform: translateY(0) scaleX(1); opacity: 0; }
+      20% { opacity: 0.65; }
+      50% { transform: translateY(-14px) scaleX(1.3); opacity: 0.45; }
+      100% { transform: translateY(-28px) scaleX(1.6); opacity: 0; }
+    }
+    .steam-particle {
+      animation: steam 2.2s infinite ease-out;
+    }
+    .steam-particle:nth-child(2) { animation-delay: 0.7s; }
+    .steam-particle:nth-child(3) { animation-delay: 1.4s; }
+
+    /* Interactive glass cup & layered liquids */
+    .glass-cup {
+      border: 3px solid rgba(74, 49, 34, 0.45);
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.1), 0 6px 14px rgba(0,0,0,0.08);
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(2px);
+    }
+    .layer-liquid {
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Touch target min-height guarantee */
+    .touch-btn {
+      min-height: 44px;
+    }
+  </style>
+</head>
+
+<body class="min-h-full flex flex-col items-center justify-start sm:justify-center p-1.5 sm:p-3 md:p-5 text-stone-800">
+
+  <div id="gameContainer" class="w-full max-w-6xl bg-cafe-cream rounded-2xl sm:rounded-3xl shadow-2xl flex flex-col border border-cafe-green/30 sm:border-4 min-h-[92vh] sm:min-h-[740px] relative overflow-hidden mb-14 lg:mb-0">
+    
+    <!-- RESPONSIVE HEADER BAR -->
+    <header class="bg-cafe-green text-cafe-cream px-3 sm:px-6 py-2.5 sm:py-3 flex flex-wrap items-center justify-between shadow-md border-b-2 border-cafe-dark/40 z-20 gap-2">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-cafe-sand/20 flex items-center justify-center text-cafe-sand text-base sm:text-xl shadow-inner border border-cafe-sand/30 shrink-0">
+          <i class="fa-solid fa-mug-saucer"></i>
+        </div>
+        <div>
+          <h1 class="font-title font-bold text-sm sm:text-lg tracking-wide flex items-center gap-1.5">
+            GÓC NHỎ <span class="text-[9px] sm:text-xs px-2 py-0.5 rounded-full bg-cafe-gold text-cafe-dark font-bold font-sans">COZY CAFE</span>
+          </h1>
+          <p class="text-[10px] sm:text-xs text-cafe-sand/80 font-sans hidden xs:block">Cà phê phin, trà trái cây & bánh nóng hổi</p>
+        </div>
+      </div>
+
+      <!-- Quick Stats & Actions -->
+      <div class="flex items-center gap-2 sm:gap-5 text-xs sm:text-sm font-semibold">
+        <!-- Day & Clock -->
+        <div class="flex flex-col text-left">
+          <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-cafe-sand/70">Thời Gian</span>
+          <span class="text-cafe-cream text-xs sm:text-sm flex items-center gap-1 font-title">
+            <span id="statDay" class="font-bold">Ngày 1</span>
+            <span class="text-[10px] sm:text-xs px-1.5 py-0.2 bg-black/30 rounded font-mono text-cafe-gold" id="statTime">07:00</span>
+          </span>
+        </div>
+
+        <!-- Reputation Stars -->
+        <div class="flex flex-col text-center">
+          <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-cafe-sand/70">Uy Tín</span>
+          <span class="text-cafe-gold text-xs sm:text-sm flex items-center gap-0.5">
+            <span id="starRating">★★★★★</span>
+            <span id="starScore" class="text-[10px] sm:text-xs text-cafe-cream font-mono hidden xs:inline">(5.0)</span>
+          </span>
+        </div>
+
+        <!-- Vault Coins -->
+        <div class="flex flex-col text-right">
+          <span class="text-[9px] sm:text-[10px] uppercase tracking-wider text-cafe-sand/70">Ngân Quỹ</span>
+          <span class="text-cafe-gold text-xs sm:text-base font-bold flex items-center gap-1">
+            <i class="fa-solid fa-coins text-yellow-300"></i>
+            <span id="statMoney" class="font-mono">100</span> <span class="text-[10px] text-cafe-sand">Xu</span>
+          </span>
+        </div>
+
+        <!-- Quick Icon Tools -->
+        <div class="flex items-center gap-1.5 pl-1.5 sm:pl-3 border-l border-white/20">
+          <button id="btnAudioToggle" title="Bật/Tắt Nhạc Lofi" class="w-8 h-8 rounded-xl bg-cafe-dark/60 hover:bg-cafe-dark text-cafe-sand flex items-center justify-center transition active:scale-95 touch-btn">
+            <i class="fa-solid fa-volume-high text-xs sm:text-sm" id="audioIcon"></i>
+          </button>
+          <button id="btnOpenRecipes" title="Sổ Tay Công Thức" class="w-8 h-8 rounded-xl bg-cafe-gold hover:bg-yellow-500 text-cafe-dark font-bold flex items-center justify-center transition active:scale-95 shadow touch-btn">
+            <i class="fa-solid fa-book-open text-xs sm:text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 1. INTRO / WELCOME VIEW -->
+    <div id="introScreen" class="flex-1 flex flex-col lg:flex-row items-center justify-center p-4 sm:p-8 md:p-10 gap-6 sm:gap-10 bg-cafe-cream overflow-y-auto">
+      
+      <!-- Cozy Vintage Window Artwork -->
+      <div class="w-full max-w-sm lg:w-5/12 bg-[#c9b197]/30 p-5 sm:p-6 rounded-3xl border-2 border-cafe-wood/20 flex flex-col items-center justify-between shadow-inner relative overflow-hidden">
+        <div class="w-48 sm:w-60 h-36 sm:h-44 bg-[#91b5a0] rounded-2xl border-4 border-[#efe7d3] shadow-md grid grid-cols-3 grid-rows-2 gap-1.5 p-2 relative overflow-hidden">
+          <div class="absolute -right-3 -top-3 w-14 h-14 rounded-full bg-[#f8df8c] shadow-lg"></div>
+          <div class="bg-[#81a590] rounded opacity-75"></div>
+          <div class="bg-[#81a590] rounded opacity-75"></div>
+          <div class="bg-[#81a590] rounded opacity-75"></div>
+          <div class="bg-[#81a590] rounded opacity-75"></div>
+          <div class="bg-[#81a590] rounded opacity-75"></div>
+          <div class="bg-[#81a590] rounded opacity-75"></div>
+        </div>
+
+        <div class="relative mt-4 flex items-center gap-4">
+          <div class="relative flex flex-col items-center">
+            <div class="flex gap-1.5 mb-1 h-5">
+              <div class="w-1.5 h-4 bg-cafe-wood/40 rounded-full steam-particle"></div>
+              <div class="w-1.5 h-5 bg-cafe-wood/50 rounded-full steam-particle"></div>
+              <div class="w-1.5 h-4 bg-cafe-wood/40 rounded-full steam-particle"></div>
+            </div>
+            <div class="w-20 sm:w-24 h-14 sm:h-16 bg-white rounded-b-3xl border-2 border-stone-300 shadow-md flex items-start justify-center pt-1.5 relative">
+              <div class="w-16 sm:w-20 h-4 sm:h-5 bg-[#5f3c1f] rounded-full border border-amber-900/40 shadow-inner flex items-center justify-center">
+                <div class="w-12 sm:w-16 h-2.5 sm:h-3 rounded-full bg-[#754622]"></div>
+              </div>
+              <div class="absolute -right-3 top-1 w-5 h-7 border-2 border-white rounded-r-2xl"></div>
+            </div>
+            <div class="w-28 sm:w-32 h-3 bg-[#dfd6c6] rounded-full mx-auto -mt-1 border border-stone-300 shadow"></div>
+          </div>
+          <div class="flex flex-col items-center">
+            <div class="text-3xl sm:text-4xl filter drop-shadow">🥐</div>
+            <div class="w-14 h-2 bg-[#dfd6c6] rounded-full mt-1 border border-stone-300"></div>
+          </div>
+        </div>
+
+        <p class="text-center mt-4 text-cafe-woodDark font-bold text-xs sm:text-sm tracking-wide">
+          "Cà phê ngon, trà thơm mát, bánh ngọt dịu xoa dịu tâm hồn."
+        </p>
+      </div>
+
+      <!-- Instructions & Launch Button -->
+      <div class="w-full lg:w-7/12 flex flex-col justify-center space-y-4 max-w-xl">
+        <div>
+          <h2 class="text-2xl sm:text-4xl font-title font-bold text-cafe-green tracking-wide">QUÁN NHỎ CỦA BẠN</h2>
+          <p class="text-stone-600 text-xs sm:text-sm mt-1 font-semibold">Khám phá hơn 25 món thức uống thơm ngon & bánh ngọt giòn rụm.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+          <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">1</span>
+            <div>
+              <h4 class="font-bold text-stone-800">Menu 6 Phân Loại Khủng</h4>
+              <p class="text-[11px] text-stone-500">Cà phê muối/dừa, Trà sữa cheese/nướng, Trà chanh giã tay, Sinh tố bơ dừa & Bánh sừng bò.</p>
+            </div>
+          </div>
+
+          <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">2</span>
+            <div>
+              <h4 class="font-bold text-stone-800">Combo Thức Uống + Bánh</h4>
+              <p class="text-[11px] text-stone-500">Khách có thể gọi thêm bánh nướng. Phục vụ đủ cả nước và bánh sẽ nhân đôi tiền tip!</p>
+            </div>
+          </div>
+
+          <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">3</span>
+            <div>
+              <h4 class="font-bold text-stone-800">Chế Độ Chill Thoải Mái</h4>
+              <p class="text-[11px] text-stone-500">Khách chờ lâu 90-140 giây, mở Sổ tay là tự động Pause, tùy chỉnh nhịp độ 0.5x, 1x, 1.5x.</p>
+            </div>
+          </div>
+
+          <div class="p-2.5 sm:p-3 rounded-2xl bg-white/80 border border-stone-200 shadow-sm flex items-start gap-2.5">
+            <span class="w-6 h-6 rounded-lg bg-amber-100 text-cafe-accent font-bold text-xs flex items-center justify-center shrink-0">4</span>
+            <div>
+              <h4 class="font-bold text-stone-800">Tối Ưu Mobile & Tablet</h4>
+              <p class="text-[11px] text-stone-500">Phím bấm chuẩn ngón tay, chuyển đổi tab mượt mà, thanh công cụ dính đáy tiện lợi.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-1">
+          <button id="btnStartShop" class="w-full sm:w-auto px-8 py-3.5 bg-cafe-green hover:bg-cafe-dark active:scale-95 text-cafe-cream text-sm sm:text-base font-bold rounded-2xl shadow-lg transition flex items-center justify-center gap-2.5 touch-btn">
+            <span>MỞ QUÁN NGAY</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. MAIN GAME SCREEN -->
+    <div id="mainGameScreen" class="hidden flex-1 flex flex-col p-2 sm:p-4 gap-2.5 bg-cafe-cream overflow-hidden">
+      
+      <!-- Top Control Strip: Status + Speed Controller + Upgrade Button -->
+      <div class="flex flex-wrap items-center justify-between bg-cafe-card p-2 sm:p-2.5 rounded-2xl border border-stone-200/90 shadow-sm gap-2">
+        
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 bg-cafe-green text-cafe-cream text-[11px] sm:text-xs rounded-xl font-bold flex items-center gap-1.5 shrink-0">
+            <i class="fa-solid fa-store"></i> Đang mở
+          </span>
+          <span class="text-[11px] sm:text-xs text-stone-600 font-semibold truncate max-w-[200px] xs:max-w-none" id="shiftStatusText">
+            Tiết trời ấm áp, thong thả pha chế nhé!
+          </span>
+        </div>
+
+        <div class="flex items-center flex-wrap gap-1.5 sm:gap-2">
+          <!-- Speed Controller (Chill 0.5x, Normal 1.0x, Fast 1.5x) -->
+          <div class="flex items-center bg-stone-100 rounded-xl p-0.5 border border-stone-300">
+            <span class="text-[10px] text-stone-500 font-bold px-1.5 hidden xs:inline">Tốc độ:</span>
+            <button class="speed-btn px-2 py-0.5 rounded-lg text-[11px] font-bold bg-cafe-green text-white transition" data-speed="0.5">🍃 Chill</button>
+            <button class="speed-btn px-2 py-0.5 rounded-lg text-[11px] font-bold text-stone-600 hover:text-stone-900 transition" data-speed="1.0">☕ 1x</button>
+            <button class="speed-btn px-2 py-0.5 rounded-lg text-[11px] font-bold text-stone-600 hover:text-stone-900 transition" data-speed="1.5">⚡ 1.5x</button>
+          </div>
+
+          <button id="btnDailyUpgrade" class="px-2.5 py-1.5 bg-cafe-sand hover:bg-amber-200 text-cafe-woodDark rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center gap-1 shadow-sm shrink-0 touch-btn">
+            <i class="fa-solid fa-arrow-trend-up"></i> <span class="hidden xs:inline">Nâng Cấp</span>
+          </button>
+          
+          <button id="btnPauseGame" class="px-2.5 py-1.5 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-xl text-[11px] sm:text-xs font-bold transition shrink-0 touch-btn">
+            <i class="fa-solid fa-pause"></i> <span class="hidden xs:inline">Nghỉ</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile / Tablet Tab Switcher (Visible on screens < lg) -->
+      <div class="flex lg:hidden bg-stone-200/80 p-1 rounded-2xl gap-1 border border-stone-300">
+        <button id="tabSwitchBar" class="flex-1 py-1.5 text-xs font-bold rounded-xl bg-cafe-green text-cafe-cream shadow flex items-center justify-center gap-1.5 transition">
+          <i class="fa-solid fa-blender"></i> Quầy Pha Chế & Bánh
+        </button>
+        <button id="tabSwitchQueue" class="flex-1 py-1.5 text-xs font-bold rounded-xl text-stone-700 hover:bg-stone-100 flex items-center justify-center gap-1.5 transition">
+          <i class="fa-solid fa-users"></i> Khách Hàng 
+          <span id="mobileQueueBadge" class="bg-cafe-accent text-white text-[10px] px-1.5 py-0.2 rounded-full font-mono">0</span>
+        </button>
+      </div>
+
+      <!-- Main Layout: Left Queue & Right Crafting Station -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-3.5 flex-1 items-start overflow-y-auto">
+        
+        <!-- LEFT: Customer Counter & Waiting Queue (col 7 on desktop) -->
+        <div id="sectionCustomerQueue" class="w-full lg:col-span-7 flex flex-col gap-2.5">
+          
+          <div class="bg-cafe-card p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-stone-200 shadow-sm flex flex-col min-h-[280px] sm:min-h-[360px]">
+            <div class="flex items-center justify-between pb-2 border-b border-stone-200 mb-2">
+              <div class="flex items-center gap-1.5 sm:gap-2">
+                <i class="fa-solid fa-users text-cafe-green"></i>
+                <h3 class="font-bold text-stone-800 text-xs sm:text-sm">HÀNG ĐỢI GỌI MÓN (BẤM ĐỂ CHỌN KHÁCH)</h3>
+              </div>
+              <span class="text-[11px] sm:text-xs px-2 sm:px-2.5 py-0.5 rounded-full bg-cafe-sand text-cafe-woodDark font-semibold" id="waitingCustomerCount">0 khách</span>
+            </div>
+
+            <!-- Customer Cards Container -->
+            <div id="customerQueueContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 flex-1 items-start">
+              <!-- Dynamically populated customer cards -->
+            </div>
+
+            <!-- Empty queue notification -->
+            <div id="emptyQueueMsg" class="hidden flex-1 flex flex-col items-center justify-center p-6 text-center text-stone-400">
+              <i class="fa-solid fa-mug-hot text-3xl sm:text-4xl mb-2 text-stone-300"></i>
+              <p class="text-xs sm:text-sm font-semibold">Chưa có khách ghé bàn...</p>
+              <p class="text-[11px] sm:text-xs text-stone-400 mt-0.5">Khách mới sẽ sớm ghé quán. Bạn có thể mở Sổ Tay để xem công thức!</p>
+            </div>
+          </div>
+
+          <!-- Ambient Dialogue Box -->
+          <div class="bg-[#ede3ce] p-2.5 sm:p-3 rounded-2xl border border-stone-300/80 flex items-center gap-2.5 shadow-sm">
+            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-cafe-green text-cafe-cream flex items-center justify-center text-xs sm:text-sm shrink-0 shadow">
+              <i class="fa-solid fa-comment-dots"></i>
+            </div>
+            <div class="flex-1 overflow-hidden">
+              <span class="text-[9.5px] uppercase tracking-wider text-cafe-woodDark font-bold block">Không khí quán:</span>
+              <p id="cafeDialogue" class="text-xs text-stone-700 italic font-medium truncate">"Hôm nay thèm một ly trà đào cam sả thanh mát và bánh sừng bò thơm ngậy..."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: Crafting Bar & Preparation Counter (col 5 on desktop) -->
+        <div id="sectionCraftingBar" class="w-full lg:col-span-5 bg-cafe-card p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-stone-200 shadow-sm flex flex-col gap-2">
+          
+          <div class="flex items-center justify-between pb-1.5 border-b border-stone-200">
+            <div class="flex items-center gap-1.5">
+              <i class="fa-solid fa-blender text-cafe-accent"></i>
+              <h3 class="font-bold text-stone-800 text-xs sm:text-sm">QUẦY PHA CHẾ & BÁNH NGỌT</h3>
+            </div>
+            <span class="text-[11px] sm:text-xs text-cafe-green font-semibold truncate max-w-[150px] sm:max-w-[200px]" id="recipeHint">Chọn khách để pha</span>
+          </div>
+
+          <!-- Glass Cup & Pastry Plate Visual Display -->
+          <div class="flex items-center justify-around p-2 bg-gradient-to-b from-[#fbf8f0] to-[#ecdcc8] rounded-2xl border border-stone-200/90 relative overflow-hidden gap-2">
+            
+            <!-- Glass cup liquid stacked preview -->
+            <div class="flex flex-col items-center">
+              <div class="w-20 sm:w-24 h-32 sm:h-36 glass-cup flex flex-col-reverse p-1 relative overflow-hidden justify-start">
+                <div id="glassCupLayers" class="w-full flex flex-col-reverse gap-0.5">
+                  <!-- Layered liquid items -->
+                </div>
+              </div>
+              <span class="text-[9px] sm:text-[10px] font-bold text-stone-500 mt-1 uppercase tracking-wider">Ly Pha Chế</span>
+            </div>
+
+            <!-- Pastry plate preview -->
+            <div class="flex flex-col items-center">
+              <div class="w-18 sm:w-22 h-18 sm:h-22 rounded-full bg-white/90 border-2 border-stone-300 shadow flex items-center justify-center relative p-3">
+                <span id="platePastryIcon" class="text-3xl sm:text-4xl filter drop-shadow opacity-50 transition-transform">🍽️</span>
+                <button id="btnRemovePastry" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white rounded-full text-[10px] hidden items-center justify-center shadow" title="Bỏ bánh ra khỏi đĩa">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+              <span class="text-[9px] sm:text-[10px] font-bold text-stone-500 mt-1.5 uppercase tracking-wider">Đĩa Bánh</span>
+            </div>
+
+            <!-- Craft summary sidebar -->
+            <div class="flex flex-col max-w-[130px] text-xs">
+              <span class="text-[9px] font-bold text-stone-500 uppercase tracking-wider">Thành phần:</span>
+              <div id="selectedIngredientsList" class="flex flex-wrap gap-1 mt-1 max-h-[55px] overflow-y-auto">
+                <span class="text-stone-400 italic text-[11px]">Trống...</span>
+              </div>
+              <div class="mt-1 text-[10.5px] text-stone-600 leading-tight">
+                Món nhận diện: <br>
+                <span id="predictedDrinkName" class="font-bold text-stone-400 truncate block">Chưa có gì</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Ingredient Tabs (Base, Milk, Fruit, Topping, Pastry) -->
+          <div class="flex items-center gap-1 overflow-x-auto pb-1 text-xs no-scrollbar">
+            <button class="ing-tab-btn px-2.5 py-1.5 rounded-xl font-bold bg-cafe-green text-white shrink-0 touch-btn" data-cat="base">Cốt Nền</button>
+            <button class="ing-tab-btn px-2.5 py-1.5 rounded-xl font-bold bg-stone-200 text-stone-700 hover:bg-stone-300 shrink-0 touch-btn" data-cat="milk">Sữa & Kem</button>
+            <button class="ing-tab-btn px-2.5 py-1.5 rounded-xl font-bold bg-stone-200 text-stone-700 hover:bg-stone-300 shrink-0 touch-btn" data-cat="fruit">Trái Cây</button>
+            <button class="ing-tab-btn px-2.5 py-1.5 rounded-xl font-bold bg-stone-200 text-stone-700 hover:bg-stone-300 shrink-0 touch-btn" data-cat="topping">Topping & Đá</button>
+            <button class="ing-tab-btn px-2.5 py-1.5 rounded-xl font-bold bg-amber-100 text-amber-900 hover:bg-amber-200 shrink-0 touch-btn" data-cat="pastry">🍰 Tủ Bánh</button>
+          </div>
+
+          <!-- Touch-friendly Ingredients Grid -->
+          <div class="overflow-y-auto max-h-[170px] sm:max-h-[220px]">
+            <div id="ingredientsGrid" class="grid grid-cols-4 sm:grid-cols-4 gap-1.5">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Desktop Quick Actions -->
+          <div class="hidden lg:grid grid-cols-2 gap-2 pt-1 border-t border-stone-200">
+            <button id="btnResetCup" class="py-2.5 px-3 rounded-xl bg-stone-200 hover:bg-rose-100 text-stone-700 hover:text-rose-700 text-xs font-bold transition flex items-center justify-center gap-1.5 touch-btn">
+              <i class="fa-solid fa-trash-can"></i> Đổ Đi (R)
+            </button>
+            <button id="btnServeDrink" class="py-2.5 px-3 rounded-xl bg-cafe-green hover:bg-cafe-dark text-cafe-cream text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-md active:scale-95 touch-btn">
+              <i class="fa-solid fa-circle-check"></i> Hoàn Thành (Space)
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- STICKY BOTTOM ACTION BAR FOR MOBILE / TABLETS -->
+    <div id="mobileBottomBar" class="lg:hidden fixed bottom-0 left-0 right-0 bg-cafe-green text-cafe-cream border-t-2 border-cafe-dark shadow-2xl p-2 z-40 flex items-center justify-between gap-2 px-3">
+      <button id="btnResetCupMobile" class="flex-1 py-2 rounded-xl bg-cafe-dark/80 text-rose-200 hover:bg-rose-900 text-xs font-bold flex items-center justify-center gap-1.5 touch-btn active:scale-95">
+        <i class="fa-solid fa-trash-can"></i> Đổ Đi (R)
+      </button>
+
+      <button id="btnOpenRecipesMobile" class="w-11 h-11 rounded-xl bg-cafe-gold text-cafe-dark font-bold flex items-center justify-center shadow touch-btn active:scale-95 shrink-0" title="Xem Sổ Tay">
+        <i class="fa-solid fa-book-open text-base"></i>
+      </button>
+
+      <button id="btnServeDrinkMobile" class="flex-2 flex-[1.5] py-2 rounded-xl bg-cafe-gold text-cafe-dark font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg touch-btn active:scale-95">
+        <i class="fa-solid fa-circle-check"></i> Giao Món (Space)
+      </button>
+    </div>
+
+    <!-- 3. RECIPES MODAL (AUTO-PAUSE & RESPONSIVE FILTER) -->
+    <div id="modalRecipes" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+      <div class="bg-cafe-card w-full max-w-3xl rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-cafe-wood/30 flex flex-col max-h-[92vh] sm:max-h-[88vh] overflow-hidden">
+        
+        <div class="bg-cafe-green text-cafe-cream px-3.5 sm:px-5 py-2.5 sm:py-3.5 flex items-center justify-between border-b-2 border-cafe-dark/40">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-book-bookmark text-cafe-gold text-base sm:text-lg"></i>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="font-title font-bold text-xs sm:text-base">SỔ TAY CÔNG THỨC PHA CHẾ</h3>
+                <span class="text-[9px] sm:text-[10px] bg-amber-400 text-cafe-dark font-bold px-2 py-0.2 rounded-full"><i class="fa-solid fa-pause"></i> Tự động tạm dừng</span>
+              </div>
+              <p class="text-[10px] text-cafe-sand/80 hidden xs:block">Thong thả tra cứu, khách hàng đang kiên nhẫn đợi bạn</p>
+            </div>
+          </div>
+          <button id="btnCloseRecipes" class="w-8 h-8 rounded-full bg-black/25 hover:bg-black/50 text-cafe-cream flex items-center justify-center transition touch-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="bg-cafe-sand/30 p-2 border-b border-stone-200 flex items-center gap-1 overflow-x-auto no-scrollbar">
+          <button class="recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-cafe-green text-white shrink-0 touch-btn" data-group="all">Tất Cả</button>
+          <button class="recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn" data-group="coffee">☕ Cà Phê</button>
+          <button class="recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn" data-group="milktea">🧋 Trà Sữa</button>
+          <button class="recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn" data-group="fruittea">🍹 Trà Trái Cây</button>
+          <button class="recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn" data-group="smoothie">🍧 Sinh Tố</button>
+          <button class="recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn" data-group="healthy">🍊 Healthy</button>
+          <button class="recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn" data-group="pastry">🥐 Bánh</button>
+        </div>
+
+        <!-- Recipe list -->
+        <div class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-2" id="recipesListContainer">
+          <!-- Populated in JS -->
+        </div>
+
+        <div class="bg-cafe-sand/40 px-4 py-2.5 border-t border-stone-200 flex justify-end">
+          <button id="btnCloseRecipes2" class="w-full sm:w-auto px-5 py-2 bg-cafe-green text-cafe-cream font-bold text-xs sm:text-sm rounded-xl hover:bg-cafe-dark transition touch-btn">
+            Đã hiểu, quay lại quầy pha
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. UPGRADES SHOP MODAL -->
+    <div id="modalUpgrades" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-2 sm:p-4">
+      <div class="bg-cafe-card w-full max-w-2xl rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-cafe-wood/30 flex flex-col max-h-[92vh] sm:max-h-[85vh] overflow-hidden">
+        
+        <div class="bg-cafe-green text-cafe-cream px-3.5 sm:px-5 py-2.5 sm:py-3.5 flex items-center justify-between border-b-2 border-cafe-dark/40">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-store text-cafe-gold text-base sm:text-lg"></i>
+            <div>
+              <h3 class="font-title font-bold text-xs sm:text-base">CỬA HÀNG NÂNG CẤP TIỆM</h3>
+              <p class="text-[10px] text-cafe-sand/80">Mở thêm menu hot trend, sắm bàn ghế & loa lofi</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-cafe-gold font-bold text-xs bg-black/30 px-2.5 py-1 rounded-xl">
+              <i class="fa-solid fa-coins"></i> <span id="shopCurrentCoins">100</span> Xu
+            </span>
+            <button id="btnCloseUpgrades" class="w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-cafe-cream flex items-center justify-center transition touch-btn">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-3 sm:p-5 overflow-y-auto flex-1 space-y-2.5" id="upgradesListContainer">
+          <!-- Populated in JS -->
+        </div>
+
+        <div class="bg-cafe-sand/40 px-4 py-2.5 border-t border-stone-200 flex justify-end">
+          <button id="btnCloseUpgrades2" class="w-full sm:w-auto px-5 py-2 bg-cafe-green text-cafe-cream font-bold text-xs sm:text-sm rounded-xl hover:bg-cafe-dark transition touch-btn">
+            Đóng cửa hàng
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. DAY SUMMARY MODAL -->
+    <div id="modalDayEnd" class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4">
+      <div class="bg-cafe-card w-full max-w-sm sm:max-w-md rounded-2xl sm:rounded-3xl shadow-2xl border-2 sm:border-4 border-cafe-gold/50 p-4 sm:p-6 text-center space-y-3.5">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-cafe-gold/20 text-cafe-gold flex items-center justify-center text-2xl sm:text-3xl mx-auto border-2 border-cafe-gold/50">
+          <i class="fa-solid fa-moon"></i>
+        </div>
+        <div>
+          <h3 class="font-title font-bold text-xl sm:text-2xl text-cafe-green" id="dayEndTitle">KẾT THÚC NGÀY 1</h3>
+          <p class="text-xs text-stone-500 font-semibold mt-0.5">Một ngày làm việc rộn ràng đã khép lại!</p>
+        </div>
+
+        <div class="bg-cafe-sand/50 rounded-2xl p-3 sm:p-4 space-y-2 text-xs sm:text-sm text-left">
+          <div class="flex justify-between items-center">
+            <span class="text-stone-600">Đơn hoàn thành:</span>
+            <span class="font-bold text-cafe-green" id="dayEndDrinks">0 đơn</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-stone-600">Doanh thu thu về:</span>
+            <span class="font-bold text-amber-800" id="dayEndRevenue">+0 Xu</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-stone-600">Tiền tip thưởng thêm:</span>
+            <span class="font-bold text-emerald-700" id="dayEndTips">+0 Xu</span>
+          </div>
+          <div class="flex justify-between items-center border-t border-stone-300 pt-1.5">
+            <span class="font-bold text-stone-800">Đánh giá uy tín:</span>
+            <span class="font-bold text-cafe-gold" id="dayEndReputation">★★★★★ (5.0)</span>
+          </div>
+        </div>
+
+        <button id="btnStartNextDay" class="w-full py-3 bg-cafe-green hover:bg-cafe-dark text-cafe-cream rounded-2xl font-bold shadow-lg transition text-xs sm:text-base flex items-center justify-center gap-2 touch-btn">
+          <span>BƯỚC SANG NGÀY TIẾP THEO</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Notification Toast floating -->
+    <div id="toastNotification" class="fixed top-14 sm:top-16 left-1/2 -translate-x-1/2 px-3.5 sm:px-4 py-2 rounded-2xl bg-cafe-dark text-cafe-cream text-xs font-bold shadow-xl border border-white/20 transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2 max-w-[90vw] truncate">
+      <i class="fa-solid fa-circle-info text-cafe-gold"></i>
+      <span id="toastMessage" class="truncate">Thông báo</span>
+    </div>
+
+  </div>
+
+  <footer class="mt-2 mb-16 lg:mb-0 text-stone-400 text-[11px] font-sans text-center">
+    Góc Nhỏ Cà Phê & Tiệm Bánh • Thiết kế tối ưu cho mọi thiết bị
+  </footer>
+
+  <script>
+    /* =========================================================
+       AUDIO SYSTEM (Pure Web Audio API - Lofi Chords & SFX)
+       ========================================================= */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+        this.lofiTimer = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        return this.muted;
+      }
+
+      playCoin() {
+        if (this.muted) return;
+        this.init();
+        try {
+          const now = this.ctx.currentTime;
+          const osc1 = this.ctx.createOscillator();
+          const osc2 = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc1.type = 'sine';
+          osc2.type = 'triangle';
+          osc1.frequency.setValueAtTime(987.77, now);
+          osc1.frequency.exponentialRampToValueAtTime(1318.51, now + 0.12);
+          osc2.frequency.setValueAtTime(1318.51, now);
+          osc2.frequency.exponentialRampToValueAtTime(1975.53, now + 0.15);
+
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+          osc1.connect(gain);
+          osc2.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc1.start(now);
+          osc2.start(now);
+          osc1.stop(now + 0.35);
+          osc2.stop(now + 0.35);
+        } catch (e) {}
+      }
+
+      playPour() {
+        if (this.muted) return;
+        this.init();
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320 + Math.random() * 80, now);
+          osc.frequency.exponentialRampToValueAtTime(560, now + 0.14);
+
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } catch (e) {}
+      }
+
+      playPastry() {
+        if (this.muted) return;
+        this.init();
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(820, now + 0.08);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } catch(e) {}
+      }
+
+      playFail() {
+        if (this.muted) return;
+        this.init();
+        try {
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } catch (e) {}
+      }
+
+      startLofiAmbient() {
+        if (this.lofiTimer) return;
+        const chords = [
+          [261.63, 329.63, 392.00, 493.88], // Cmaj7
+          [220.00, 261.63, 329.63, 392.00], // Am7
+          [174.61, 220.00, 261.63, 329.63], // Fmaj7
+          [196.00, 246.94, 293.66, 349.23]  // G7
+        ];
+        let chordIdx = 0;
+
+        this.lofiTimer = setInterval(() => {
+          if (this.muted || !this.ctx) return;
+          try {
+            const chord = chords[chordIdx % chords.length];
+            chordIdx++;
+            const now = this.ctx.currentTime;
+            chord.forEach((freq, i) => {
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = 'sine';
+              osc.frequency.value = freq;
+
+              gain.gain.setValueAtTime(0.001, now + (i * 0.05));
+              gain.gain.exponentialRampToValueAtTime(0.016, now + 0.8 + (i * 0.05));
+              gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.4);
+
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+
+              osc.start(now + (i * 0.05));
+              osc.stop(now + 3.5);
+            });
+          } catch(e) {}
+        }, 4200);
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* =========================================================
+       INGREDIENTS DATABASE (5 CATEGORIES)
+       ========================================================= */
+    const INGREDIENTS = {
+      // BASE
+      'coffee': { id: 'coffee', name: 'Cà Phê Phin', cat: 'base', icon: 'fa-mug-hot', color: '#4a2c14', textColor: '#fff' },
+      'cold_brew': { id: 'cold_brew', name: 'Cold Brew', cat: 'base', icon: 'fa-bottle-water', color: '#3d1d0c', textColor: '#fff' },
+      'black_tea': { id: 'black_tea', name: 'Trà Đen', cat: 'base', icon: 'fa-leaf', color: '#883e1c', textColor: '#fff' },
+      'green_tea': { id: 'green_tea', name: 'Trà Lài/Xanh', cat: 'base', icon: 'fa-seedling', color: '#879e43', textColor: '#fff' },
+      'oolong_tea': { id: 'oolong_tea', name: 'Trà Ô Long', cat: 'base', icon: 'fa-feather', color: '#a26229', textColor: '#fff' },
+      'matcha_base': { id: 'matcha_base', name: 'Cốt Matcha', cat: 'base', icon: 'fa-spa', color: '#4c7a36', textColor: '#fff' },
+      'cacao': { id: 'cacao', name: 'Bột Cacao', cat: 'base', icon: 'fa-cookie-bite', color: '#54311c', textColor: '#fff' },
+      'kombucha_base': { id: 'kombucha_base', name: 'Cốt Kombucha', cat: 'base', icon: 'fa-flask', color: '#c7493a', textColor: '#fff' },
+
+      // MILK & CREAM
+      'cond_milk': { id: 'cond_milk', name: 'Sữa Đặc', cat: 'milk', icon: 'fa-bottle-droplet', color: '#f5ead2', textColor: '#6d4512' },
+      'fresh_milk': { id: 'fresh_milk', name: 'Sữa Tươi', cat: 'milk', icon: 'fa-cow', color: '#ffffff', textColor: '#444' },
+      'oat_milk': { id: 'oat_milk', name: 'Sữa Yến Mạch', cat: 'milk', icon: 'fa-wheat-awn', color: '#eddac2', textColor: '#5b4122' },
+      'coconut_milk': { id: 'coconut_milk', name: 'Nước Cốt Dừa', cat: 'milk', icon: 'fa-water', color: '#faf4eb', textColor: '#5c5245' },
+      'salt_cream': { id: 'salt_cream', name: 'Kem Muối Biển', cat: 'milk', icon: 'fa-cloud', color: '#f7f6f0', textColor: '#3a3a3a' },
+      'cheese_cream': { id: 'cheese_cream', name: 'Kem Cheese', cat: 'milk', icon: 'fa-cheese', color: '#ffe7a3', textColor: '#6b5105' },
+      'yogurt': { id: 'yogurt', name: 'Sữa Chua', cat: 'milk', icon: 'fa-bowl-food', color: '#fbf9f4', textColor: '#474747' },
+
+      // FRUIT & SYRUP
+      'orange_slice': { id: 'orange_slice', name: 'Cam Vàng', cat: 'fruit', icon: 'fa-lemon', color: '#e88927', textColor: '#fff' },
+      'peach_syrup': { id: 'peach_syrup', name: 'Đào & Sả', cat: 'fruit', icon: 'fa-apple-whole', color: '#e5804e', textColor: '#fff' },
+      'lychee_rose': { id: 'lychee_rose', name: 'Vải Hoa Hồng', cat: 'fruit', icon: 'fa-fan', color: '#ea728c', textColor: '#fff' },
+      'mulberry': { id: 'mulberry', name: 'Dâu Tằm Tươi', cat: 'fruit', icon: 'fa-cubes-stacked', color: '#68254b', textColor: '#fff' },
+      'hand_lemon': { id: 'hand_lemon', name: 'Chanh Nước Hoa', cat: 'fruit', icon: 'fa-spray-can-sparkles', color: '#b2cb38', textColor: '#223805' },
+      'avocado': { id: 'avocado', name: 'Bơ Sáp & Sầu', cat: 'fruit', icon: 'fa-seedling', color: '#7ba644', textColor: '#fff' },
+      'melon': { id: 'melon', name: 'Dưa Lưới Tuyết', cat: 'fruit', icon: 'fa-bowling-ball', color: '#a0d468', textColor: '#1d4002' },
+      'carrot_juice': { id: 'carrot_juice', name: 'Cà Rốt Ép', cat: 'fruit', icon: 'fa-carrot', color: '#e26d22', textColor: '#fff' },
+      'honey': { id: 'honey', name: 'Mật Ong & Cúc', cat: 'fruit', icon: 'fa-droplet', color: '#e5ab29', textColor: '#4d3700' },
+      'pomegranate': { id: 'pomegranate', name: 'Lựu Đỏ Ép', cat: 'fruit', icon: 'fa-gem', color: '#b52b3e', textColor: '#fff' },
+      'lotus_seed': { id: 'lotus_seed', name: 'Hạt Sen Vàng', cat: 'fruit', icon: 'fa-circle', color: '#edd893', textColor: '#5a460b' },
+
+      // TOPPING & ICE
+      'ice': { id: 'ice', name: 'Đá Viên', cat: 'topping', icon: 'fa-cube', color: '#cbe6f2', textColor: '#185573' },
+      'crushed_ice': { id: 'crushed_ice', name: 'Đá Tuyết', cat: 'topping', icon: 'fa-snowflake', color: '#d8eff8', textColor: '#1c6285' },
+      'boba': { id: 'boba', name: 'Trân Châu', cat: 'topping', icon: 'fa-circle-dot', color: '#2b1a13', textColor: '#fff' },
+      'cookie_crumb': { id: 'cookie_crumb', name: 'Vụn Oreo', cat: 'topping', icon: 'fa-cookie', color: '#382b27', textColor: '#fff' },
+      'burnt_sugar': { id: 'burnt_sugar', name: 'Đường Nướng', cat: 'topping', icon: 'fa-fire-flame-curved', color: '#824813', textColor: '#fff' }
+    };
+
+    // PASTRIES
+    const PASTRIES = {
+      'croissant': { id: 'croissant', name: 'Croissant Bơ Tỏi', icon: '🥐', price: 28, desc: 'Bánh sừng bò ngập bơ thơm phức sốt tỏi béo ngậy' },
+      'tiramisu': { id: 'tiramisu', name: 'Tiramisu Cổ Điển', icon: '🍰', price: 32, desc: 'Bánh đẫm cà phê espresso cùng mascarpone mịn màng' },
+      'matcha_tiramisu': { id: 'matcha_tiramisu', name: 'Tiramisu Matcha', icon: '🍵', price: 35, desc: 'Đắng nhẹ matcha Nhật quyện kem phô mai ngọt dịu' },
+      'croffle': { id: 'croffle', name: 'Croffle Kem Tươi', icon: '🧇', price: 30, desc: 'Bánh nướng nóng giòn dai bên trong phủ kem tươi' }
+    };
+
+    /* =========================================================
+       25+ DRINK RECIPES ACROSS 6 CATEGORIES
+       ========================================================= */
+    const RECIPES = [
+      // COFFEE
+      { id: 'den_da', name: 'Cà Phê Đen Đá', group: 'coffee', desc: 'Đậm đà hương vị phin mộc với đá mát lạnh', price: 18, prepBonus: 3, ingredients: ['coffee', 'ice'], unlocked: true, icon: '☕' },
+      { id: 'sua_da', name: 'Cà Phê Sữa Đá', group: 'coffee', desc: 'Cà phê đậm đà hòa sữa đặc ngọt béo', price: 22, prepBonus: 4, ingredients: ['coffee', 'cond_milk', 'ice'], unlocked: true, icon: '🧋' },
+      { id: 'bac_xiu', name: 'Bạc Xỉu Sài Gòn', group: 'coffee', desc: 'Nhiều sữa ít cà phê ngọt dịu êm', price: 25, prepBonus: 5, ingredients: ['cond_milk', 'fresh_milk', 'coffee', 'ice'], unlocked: true, icon: '🥛' },
+      { id: 'cf_muoi', name: 'Cà Phê Muối Huế', group: 'coffee', desc: 'Vị đắng cà phê cùng kem muối biển béo mặn', price: 32, prepBonus: 6, ingredients: ['coffee', 'cond_milk', 'salt_cream', 'ice'], unlocked: true, icon: '🧂' },
+      { id: 'cf_dua', name: 'Cà Phê Cốt Dừa', group: 'coffee', desc: 'Cốt dừa ngậy béo đá tuyết hòa cùng cà phê', price: 34, prepBonus: 7, ingredients: ['coffee', 'coconut_milk', 'crushed_ice'], unlocked: false, icon: '🥥' },
+      { id: 'cold_brew_cam', name: 'Cold Brew Cam Vàng', group: 'coffee', desc: 'Cà phê ủ lạnh thanh thoát hòa lát cam tươi', price: 36, prepBonus: 8, ingredients: ['cold_brew', 'orange_slice', 'ice'], unlocked: false, icon: '🍊' },
+
+      // MILKTEA
+      { id: 'ts_truyen_thong', name: 'Trà Sữa Trân Châu Đen', group: 'milktea', desc: 'Trà đen sữa thơm nức và trân châu dẻo dai', price: 30, prepBonus: 6, ingredients: ['black_tea', 'fresh_milk', 'boba', 'ice'], unlocked: true, icon: '🥤' },
+      { id: 'ts_thai_xanh_cheese', name: 'Trà Sữa Thái Xanh Cheese', group: 'milktea', desc: 'Trà thái xanh thơm mát phủ kem phô mai sánh ngậy', price: 35, prepBonus: 7, ingredients: ['green_tea', 'fresh_milk', 'cheese_cream', 'ice'], unlocked: false, icon: '🧀' },
+      { id: 'ts_lai_yen_mach', name: 'Trà Lài Sữa Yến Mạch', group: 'milktea', desc: 'Trà lài thanh khiết và sữa yến mạch thuần chay', price: 36, prepBonus: 7, ingredients: ['green_tea', 'oat_milk', 'ice'], unlocked: false, icon: '🌾' },
+      { id: 'olong_nuong', name: 'Ô Long Sữa Nướng', group: 'milktea', desc: 'Trà ô long hun khói cùng lớp đường nướng caramel', price: 38, prepBonus: 8, ingredients: ['oolong_tea', 'fresh_milk', 'burnt_sugar', 'boba', 'ice'], unlocked: false, icon: '🔥' },
+
+      // FRUITTEA
+      { id: 'tra_dao_cam_sa', name: 'Trà Đào Cam Sả', group: 'fruittea', desc: 'Món nước quốc dân thanh mát chua ngọt thơm sả', price: 28, prepBonus: 5, ingredients: ['black_tea', 'peach_syrup', 'orange_slice', 'ice'], unlocked: true, icon: '🍹' },
+      { id: 'tra_vai_hoa_hong', name: 'Trà Vải Hoa Hồng', group: 'fruittea', desc: 'Vải mọng nước thơm ngọt hòa hương hoa hồng', price: 32, prepBonus: 6, ingredients: ['green_tea', 'lychee_rose', 'ice'], unlocked: false, icon: '🌹' },
+      { id: 'tra_chanh_gia_tay', name: 'Trà Chanh Giã Tay', group: 'fruittea', desc: 'Chanh nước hoa Quảng Đông giã tay dậy tinh dầu', price: 30, prepBonus: 6, ingredients: ['green_tea', 'hand_lemon', 'ice'], unlocked: false, icon: '🍋' },
+      { id: 'tra_sen_macchiato', name: 'Trà Sen Vàng Macchiato', group: 'fruittea', desc: 'Trà sen thanh khiết cùng màng sữa béo nhẹ', price: 36, prepBonus: 8, ingredients: ['oolong_tea', 'lotus_seed', 'salt_cream', 'ice'], unlocked: false, icon: '🪷' },
+      { id: 'tra_dau_tam_tuyet', name: 'Trà Dâu Tằm Tuyết', group: 'fruittea', desc: 'Dâu tằm chín mọng tím ngát kết hợp đá bào tuyết', price: 34, prepBonus: 7, ingredients: ['black_tea', 'mulberry', 'crushed_ice'], unlocked: false, icon: '🍧' },
+
+      // SMOOTHIE
+      { id: 'matcha_cookie_ice', name: 'Matcha Cookie Đá Xay', group: 'smoothie', desc: 'Matcha Nhật xay tuyết cùng sữa tươi và vụn oreo', price: 38, prepBonus: 8, ingredients: ['matcha_base', 'fresh_milk', 'cookie_crumb', 'crushed_ice'], unlocked: false, icon: '🍪' },
+      { id: 'bo_dua_sau_rieng', name: 'Sinh Tố Bơ Dừa Sầu', group: 'smoothie', desc: 'Bơ sáp béo ngậy cùng cốt dừa và hương sầu riêng', price: 42, prepBonus: 9, ingredients: ['avocado', 'coconut_milk', 'cond_milk', 'crushed_ice'], unlocked: false, icon: '🥑' },
+      { id: 'cacao_dua_ice', name: 'Cacao Cốt Dừa Đá Xay', group: 'smoothie', desc: 'Cacao trầm ấm hòa cùng tuyết dừa ngậy béo', price: 36, prepBonus: 7, ingredients: ['cacao', 'coconut_milk', 'crushed_ice'], unlocked: false, icon: '🍫' },
+      { id: 'sua_chua_dua_luoi', name: 'Sữa Chua Dưa Lưới', group: 'smoothie', desc: 'Sữa chua dẻo thơm mát cùng nước dưa lưới', price: 35, prepBonus: 7, ingredients: ['yogurt', 'melon', 'crushed_ice'], unlocked: false, icon: '🍈' },
+
+      // HEALTHY
+      { id: 'ep_cam_ca_rot', name: 'Nước Ép Cam Cà Rốt', group: 'healthy', desc: 'Giàu vitamin A và C, tươi nguyên chất giải nhiệt', price: 30, prepBonus: 5, ingredients: ['carrot_juice', 'orange_slice', 'ice'], unlocked: true, icon: '🥕' },
+      { id: 'tra_cuc_mat_ong', name: 'Trà Hoa Cúc Mật Ong', group: 'healthy', desc: 'Thanh lọc cơ thể, an thần dịu dàng cho tâm trí', price: 32, prepBonus: 6, ingredients: ['green_tea', 'honey'], unlocked: false, icon: '🌼' },
+      { id: 'kombucha_luu_do', name: 'Kombucha Lựu Đỏ', group: 'healthy', desc: 'Trà lên men hỗ trợ tiêu hóa điểm xuyết hạt lựu đỏ', price: 38, prepBonus: 8, ingredients: ['kombucha_base', 'pomegranate', 'ice'], unlocked: false, icon: '🍷' }
+    ];
+
+    const CUSTOMER_PROFILES = [
+      { name: 'Anh Nam công sở', avatar: '👨‍💼', desc: 'Cần sự tỉnh táo trước cuộc họp với sếp.', patienceBase: 110 },
+      { name: 'Bé Linh GenZ', avatar: '👩‍🎤', desc: 'Thích đồ uống hot trend check-in sống ảo.', patienceBase: 95 },
+      { name: 'Chú Ba hưu trí', avatar: '👴', desc: 'Ngồi ngắm phố phường, mê cà phê phin mộc.', patienceBase: 140 },
+      { name: 'Chị Mai thiết kế', avatar: '👩‍💻', desc: 'Deadline dí, cần combo nước thanh mát kèm bánh.', patienceBase: 100 },
+      { name: 'Em Quân học sinh', avatar: '👦', desc: 'Hảo ngọt, cuồng trà sữa trân châu và bánh sừng bò.', patienceBase: 90 },
+      { name: 'Cô Lan sành ăn', avatar: '👵', desc: 'Rất kĩ tính nhưng hào phóng tiền tip nếu pha chuẩn.', patienceBase: 125 },
+      { name: 'Huấn luyện viên Hải', avatar: '🏋️‍♂️', desc: 'Ưa chuộng thức uống detox khỏe khoắn.', patienceBase: 120 },
+      { name: 'Bạn An mọt sách', avatar: '🧑‍🏫', desc: 'Tìm góc yên ả nhâm nhi trà hoa cúc mật ong.', patienceBase: 135 }
+    ];
+
+    const DIALOGUES = [
+      "Quán bật nhạc lofi chill quá, ngồi làm việc dễ chịu ghê.",
+      "Cà phê muối ở đây lớp kem béo mịn đỉnh thật sự!",
+      "Hôm nay tiết trời đẹp quá, một ly trà đào cam sả là chuẩn bài.",
+      "Bánh croissant bơ tỏi thơm nức cả gian phòng.",
+      "Trà sữa nướng khò bốc mùi thơm caramel mê ly luôn quán ơi!",
+      "Nhân viên pha chế nhanh nhẹn, quán nhỏ mà chu đáo hết nấc."
+    ];
+
+    /* Global Game State */
+    const GameState = {
+      day: 1,
+      hour: 7,
+      minute: 0,
+      money: 100,
+      reputation: 5.0,
+      soldToday: 0,
+      dayRevenue: 0,
+      dayTips: 0,
+      isPaused: false,
+      isOpen: false,
+      gameSpeed: 0.5, // Default chill speed
+      pausedByModal: false,
+
+      currentTab: 'base',
+      currentRecipeFilter: 'all',
+      mobileActiveView: 'crafting', // 'crafting' or 'queue'
+
+      upgrades: {
+        autoRegister: false,
+        cozySeating: 0,
+        lofiSpeakers: false,
+        pastryWarmer: false
+      },
+
+      activeCustomers: [],
+      selectedCustomerId: null,
+      currentCup: [],
+      currentPastry: null,
+      maxWaitCapacity: 2
+    };
+
+    function loadSavedState() {
+      try {
+        const saved = localStorage.getItem('goc_nho_cafe_mega_save');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          GameState.money = parsed.money ?? 100;
+          GameState.day = parsed.day ?? 1;
+          GameState.reputation = parsed.reputation ?? 5.0;
+          if (parsed.upgrades) GameState.upgrades = parsed.upgrades;
+          if (parsed.recipes) {
+            parsed.recipes.forEach(r => {
+              const found = RECIPES.find(item => item.id === r.id);
+              if (found) found.unlocked = r.unlocked;
+            });
+          }
+        }
+      } catch(e) {}
+    }
+
+    function saveState() {
+      try {
+        const payload = {
+          money: GameState.money,
+          day: GameState.day,
+          reputation: GameState.reputation,
+          upgrades: GameState.upgrades,
+          recipes: RECIPES.map(r => ({ id: r.id, unlocked: r.unlocked }))
+        };
+        localStorage.setItem('goc_nho_cafe_mega_save', JSON.stringify(payload));
+      } catch(e) {}
+    }
+
+    function updateHeaderStats() {
+      document.getElementById('statDay').textContent = `Ngày ${GameState.day}`;
+      const timeStr = `${String(GameState.hour).padStart(2, '0')}:${String(GameState.minute).padStart(2, '0')}`;
+      document.getElementById('statTime').textContent = timeStr;
+
+      document.getElementById('statMoney').textContent = GameState.money;
+      document.getElementById('shopCurrentCoins').textContent = GameState.money;
+
+      const rep = Math.max(1, Math.min(5, GameState.reputation));
+      const fullStars = Math.round(rep);
+      document.getElementById('starRating').textContent = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
+      document.getElementById('starScore').textContent = `(${rep.toFixed(1)})`;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const text = document.getElementById('toastMessage');
+      text.textContent = msg;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2000);
+    }
+
+    function renderIngredientGrid() {
+      const grid = document.getElementById('ingredientsGrid');
+      grid.innerHTML = '';
+
+      if (GameState.currentTab === 'pastry') {
+        Object.keys(PASTRIES).forEach(pKey => {
+          const item = PASTRIES[pKey];
+          const isSelected = (GameState.currentPastry === pKey);
+
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `p-1.5 sm:p-2 rounded-2xl flex flex-col items-center justify-center gap-0.5 sm:gap-1 border transition-all text-xs font-semibold relative touch-btn active:scale-95 ${
+            isSelected 
+              ? 'bg-amber-100 border-cafe-accent ring-2 ring-cafe-accent/40 shadow-sm scale-95' 
+              : 'bg-white hover:bg-stone-50 border-stone-200 text-stone-700 shadow-sm hover:scale-[1.02]'
+          }`;
+
+          btn.innerHTML = `
+            <div class="text-xl sm:text-2xl">${item.icon}</div>
+            <span class="truncate w-full text-center text-[10px] leading-tight">${item.name}</span>
+            <span class="text-[9px] font-mono text-amber-800 font-bold">${item.price} Xu</span>
+          `;
+
+          btn.onclick = () => selectPastry(pKey);
+          grid.appendChild(btn);
+        });
+        return;
+      }
+
+      const list = Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].cat === GameState.currentTab);
+      list.forEach((key, index) => {
+        const ing = INGREDIENTS[key];
+        const isSelected = GameState.currentCup.includes(key);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `p-1 sm:p-1.5 rounded-2xl flex flex-col items-center justify-center gap-0.5 sm:gap-1 border transition-all text-xs font-semibold relative touch-btn active:scale-95 ${
+          isSelected 
+            ? 'bg-amber-100 border-cafe-accent ring-2 ring-cafe-accent/40 shadow-sm scale-95' 
+            : 'bg-white hover:bg-stone-50 border-stone-200 text-stone-700 shadow-sm hover:scale-[1.02]'
+        }`;
+
+        const shortcut = index < 8 ? `<span class="absolute top-1 left-1.5 text-[8px] font-mono text-stone-400 font-bold hidden xs:inline">${index + 1}</span>` : '';
+
+        btn.innerHTML = `
+          ${shortcut}
+          <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs shadow-inner shrink-0" style="background-color: ${ing.color}; color: ${ing.textColor}">
+            <i class="fa-solid ${ing.icon}"></i>
+          </div>
+          <span class="truncate w-full text-center text-[9px] sm:text-[10px] leading-tight font-medium">${ing.name}</span>
+        `;
+
+        btn.onclick = () => toggleIngredient(key);
+        grid.appendChild(btn);
+      });
+    }
+
+    function selectPastry(pKey) {
+      sound.playPastry();
+      GameState.currentPastry = (GameState.currentPastry === pKey) ? null : pKey;
+      renderCupAndPlatePreview();
+      renderIngredientGrid();
+    }
+
+    function toggleIngredient(ingId) {
+      sound.playPour();
+      const idx = GameState.currentCup.indexOf(ingId);
+      if (idx > -1) {
+        GameState.currentCup.splice(idx, 1);
+      } else {
+        if (GameState.currentCup.length >= 6) {
+          showToast('Ly nước đã đầy tràn rồi!');
+          return;
+        }
+        GameState.currentCup.push(ingId);
+      }
+      renderCupAndPlatePreview();
+      renderIngredientGrid();
+    }
+
+    function renderCupAndPlatePreview() {
+      const cupLayers = document.getElementById('glassCupLayers');
+      const listEl = document.getElementById('selectedIngredientsList');
+      const predictEl = document.getElementById('predictedDrinkName');
+      const plateIcon = document.getElementById('platePastryIcon');
+      const btnRemovePastry = document.getElementById('btnRemovePastry');
+
+      cupLayers.innerHTML = '';
+      listEl.innerHTML = '';
+
+      if (GameState.currentPastry) {
+        const p = PASTRIES[GameState.currentPastry];
+        plateIcon.textContent = p.icon;
+        plateIcon.className = 'text-3xl sm:text-4xl filter drop-shadow scale-110 transition-transform';
+        btnRemovePastry.classList.remove('hidden');
+        btnRemovePastry.classList.add('flex');
+      } else {
+        plateIcon.textContent = '🍽️';
+        plateIcon.className = 'text-3xl sm:text-4xl filter drop-shadow opacity-50 transition-transform';
+        btnRemovePastry.classList.add('hidden');
+        btnRemovePastry.classList.remove('flex');
+      }
+
+      if (GameState.currentCup.length === 0 && !GameState.currentPastry) {
+        listEl.innerHTML = '<span class="text-stone-400 italic text-[11px]">Trống...</span>';
+        predictEl.textContent = 'Chưa có gì';
+        predictEl.className = 'font-bold text-stone-400 truncate block';
+        return;
+      }
+
+      const totalLayers = GameState.currentCup.length;
+      const heightPercent = Math.min(26, Math.floor(95 / (totalLayers || 1)));
+
+      GameState.currentCup.forEach(ingKey => {
+        const item = INGREDIENTS[ingKey];
+        if (!item) return;
+
+        const layerDiv = document.createElement('div');
+        layerDiv.className = 'w-full rounded-md layer-liquid shadow-sm flex items-center justify-center text-[8px] font-bold overflow-hidden';
+        layerDiv.style.height = `${heightPercent}px`;
+        layerDiv.style.backgroundColor = item.color;
+        layerDiv.style.color = item.textColor;
+        layerDiv.textContent = item.name.split(' ')[0];
+        cupLayers.appendChild(layerDiv);
+
+        const badge = document.createElement('span');
+        badge.className = 'px-1 py-0.5 rounded text-[9px] font-bold inline-flex items-center gap-1 border border-stone-200 bg-white text-stone-700 shadow-sm';
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full" style="background-color: ${item.color}"></span> ${item.name.split(' ')[0]}`;
+        listEl.appendChild(badge);
+      });
+
+      if (GameState.currentPastry) {
+        const p = PASTRIES[GameState.currentPastry];
+        const pBadge = document.createElement('span');
+        pBadge.className = 'px-1 py-0.5 rounded text-[9px] font-bold inline-flex items-center gap-1 border border-amber-300 bg-amber-50 text-amber-900 shadow-sm';
+        pBadge.innerHTML = `${p.icon} ${p.name.split(' ')[0]}`;
+        listEl.appendChild(pBadge);
+      }
+
+      const matched = findRecipeByIngredients(GameState.currentCup);
+      let summaryText = '';
+      if (matched) {
+        summaryText = `${matched.icon} ${matched.name}`;
+      } else if (GameState.currentCup.length > 0) {
+        summaryText = 'Nước tự pha';
+      }
+
+      if (GameState.currentPastry) {
+        const pName = PASTRIES[GameState.currentPastry].name;
+        summaryText = summaryText ? `${summaryText} + ${pName}` : pName;
+      }
+
+      predictEl.textContent = summaryText || 'Chưa có gì';
+      predictEl.className = matched ? 'font-bold text-emerald-700 truncate block' : 'font-bold text-cafe-accent truncate block';
+    }
+
+    function findRecipeByIngredients(currentList) {
+      if (currentList.length === 0) return null;
+      return RECIPES.find(recipe => {
+        if (recipe.ingredients.length !== currentList.length) return false;
+        const setA = [...recipe.ingredients].sort();
+        const setB = [...currentList].sort();
+        return setA.every((val, index) => val === setB[index]);
+      });
+    }
+
+    function getUnlockedRecipes() {
+      return RECIPES.filter(r => r.unlocked);
+    }
+
+    function spawnCustomer() {
+      const maxCap = GameState.maxWaitCapacity + GameState.upgrades.cozySeating;
+      if (GameState.activeCustomers.length >= maxCap) return;
+
+      const availableRecipes = getUnlockedRecipes();
+      if (availableRecipes.length === 0) return;
+
+      const profile = CUSTOMER_PROFILES[Math.floor(Math.random() * CUSTOMER_PROFILES.length)];
+      const orderedDrink = availableRecipes[Math.floor(Math.random() * availableRecipes.length)];
+      
+      let orderedPastry = null;
+      if (Math.random() < 0.40) {
+        const pastryKeys = Object.keys(PASTRIES);
+        orderedPastry = PASTRIES[pastryKeys[Math.floor(Math.random() * pastryKeys.length)]];
+      }
+
+      let patience = profile.patienceBase;
+      if (GameState.upgrades.lofiSpeakers) {
+        patience = Math.round(patience * 1.35);
+      }
+
+      const newCustomer = {
+        id: 'cust_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        name: profile.name,
+        avatar: profile.avatar,
+        desc: profile.desc,
+        drink: orderedDrink,
+        pastry: orderedPastry,
+        maxPatience: patience,
+        currentPatience: patience
+      };
+
+      GameState.activeCustomers.push(newCustomer);
+      if (!GameState.selectedCustomerId) {
+        GameState.selectedCustomerId = newCustomer.id;
+      }
+
+      const orderString = orderedPastry 
+        ? `${orderedDrink.name} & ${orderedPastry.name}` 
+        : orderedDrink.name;
+
+      document.getElementById('cafeDialogue').textContent = `"${profile.name}: Cho mình gọi Combo ${orderString} nhé quán!"`;
+
+      renderCustomers();
+    }
+
+    function renderCustomers() {
+      const container = document.getElementById('customerQueueContainer');
+      const emptyMsg = document.getElementById('emptyQueueMsg');
+      const countLabel = document.getElementById('waitingCustomerCount');
+      const mobileBadge = document.getElementById('mobileQueueBadge');
+
+      container.innerHTML = '';
+      countLabel.textContent = `${GameState.activeCustomers.length} khách đang đợi`;
+      if (mobileBadge) mobileBadge.textContent = GameState.activeCustomers.length;
+
+      if (GameState.activeCustomers.length === 0) {
+        emptyMsg.classList.remove('hidden');
+        document.getElementById('recipeHint').textContent = 'Chưa có khách gọi món';
+        return;
+      } else {
+        emptyMsg.classList.add('hidden');
+      }
+
+      GameState.activeCustomers.forEach(cust => {
+        const isSelected = (cust.id === GameState.selectedCustomerId);
+        const card = document.createElement('div');
+        card.className = `p-2.5 sm:p-3 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-1.5 sm:gap-2 shadow-sm ${
+          isSelected 
+            ? 'bg-amber-50/90 border-cafe-green ring-2 ring-cafe-green/30' 
+            : 'bg-white hover:bg-stone-50 border-stone-200'
+        }`;
+
+        card.onclick = () => {
+          GameState.selectedCustomerId = cust.id;
+          renderCustomers();
+        };
+
+        const percent = Math.max(0, Math.min(100, (cust.currentPatience / cust.maxPatience) * 100));
+        let barColor = 'bg-emerald-500';
+        if (percent < 25) barColor = 'bg-rose-500 animate-pulse';
+        else if (percent < 50) barColor = 'bg-amber-500';
+
+        const totalPrice = cust.drink.price + (cust.pastry ? cust.pastry.price : 0);
+
+        const quickIngBadges = cust.drink.ingredients.map(ingId => {
+          const ing = INGREDIENTS[ingId];
+          return `<span class="px-1.5 py-0.2 rounded text-[8.5px] font-bold" style="background-color:${ing.color}; color:${ing.textColor}">${ing.name}</span>`;
+        }).join('');
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xl sm:text-2xl">${cust.avatar}</span>
+              <div>
+                <h4 class="font-bold text-xs text-stone-800 leading-tight">${cust.name}</h4>
+                <p class="text-[9.5px] text-stone-500 truncate max-w-[120px]">${cust.desc}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button class="btnQuickRecipe text-[9.5px] sm:text-[10.5px] bg-amber-100 hover:bg-amber-200 text-cafe-woodDark px-2 py-0.5 rounded-lg font-bold flex items-center gap-1 transition touch-btn" title="Xem nhanh công thức">
+                <i class="fa-solid fa-lightbulb text-amber-600"></i> Công thức
+              </button>
+              ${isSelected ? '<span class="text-[9px] bg-cafe-green text-cafe-cream px-1.5 py-0.5 rounded-full font-bold">Chọn</span>' : ''}
+            </div>
+          </div>
+
+          <div class="bg-cafe-sand/50 p-2 rounded-xl flex flex-col gap-1">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5 truncate">
+                <span class="text-xs sm:text-sm">${cust.drink.icon}</span>
+                <span class="text-xs font-bold text-cafe-woodDark truncate">${cust.drink.name}</span>
+              </div>
+              <span class="text-[10px] sm:text-[11px] font-mono font-bold text-stone-600">${cust.drink.price} Xu</span>
+            </div>
+
+            <div class="flex flex-wrap gap-1 mt-0.5 pt-1 border-t border-stone-200/60">
+              <span class="text-[8.5px] text-stone-500 font-semibold self-center">Nguyên liệu:</span>
+              ${quickIngBadges}
+            </div>
+
+            ${cust.pastry ? `
+              <div class="flex items-center justify-between border-t border-stone-200/80 pt-1">
+                <div class="flex items-center gap-1.5 truncate">
+                  <span class="text-xs sm:text-sm">${cust.pastry.icon}</span>
+                  <span class="text-xs font-bold text-amber-900 truncate">${cust.pastry.name}</span>
+                </div>
+                <span class="text-[10px] sm:text-[11px] font-mono font-bold text-amber-700">+${cust.pastry.price} Xu</span>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="space-y-0.5">
+            <div class="flex justify-between items-center text-[9.5px] font-semibold text-stone-500">
+              <span>Chờ: ${Math.round(percent)}% (${Math.ceil(cust.currentPatience)}s)</span>
+              <span class="text-cafe-accent font-bold font-mono text-xs">Tổng: ${totalPrice} Xu</span>
+            </div>
+            <div class="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
+              <div class="h-full ${barColor} transition-all duration-300" style="width: ${percent}%"></div>
+            </div>
+          </div>
+        `;
+
+        const quickBtn = card.querySelector('.btnQuickRecipe');
+        quickBtn.onclick = (e) => {
+          e.stopPropagation();
+          openRecipeModalForGroup(cust.drink.group);
+        };
+
+        container.appendChild(card);
+      });
+
+      const currentSelected = GameState.activeCustomers.find(c => c.id === GameState.selectedCustomerId);
+      if (currentSelected) {
+        const orderTxt = currentSelected.pastry 
+          ? `${currentSelected.drink.name} + ${currentSelected.pastry.name}` 
+          : currentSelected.drink.name;
+        document.getElementById('recipeHint').textContent = `Đang pha: ${orderTxt}`;
+      }
+    }
+
+    function serveCurrentCup() {
+      if (GameState.activeCustomers.length === 0) {
+        showToast('Hiện chưa có khách nào gọi món!');
+        return;
+      }
+
+      const customer = GameState.activeCustomers.find(c => c.id === GameState.selectedCustomerId) 
+                     || GameState.activeCustomers[0];
+
+      if (!customer) return;
+
+      const matchedDrink = findRecipeByIngredients(GameState.currentCup);
+      const isDrinkCorrect = matchedDrink && (matchedDrink.id === customer.drink.id);
+      
+      const requiresPastry = !!customer.pastry;
+      const isPastryCorrect = requiresPastry ? (GameState.currentPastry === customer.pastry.id) : (GameState.currentPastry === null);
+
+      if (isDrinkCorrect && isPastryCorrect) {
+        sound.playCoin();
+
+        const patiencePct = customer.currentPatience / customer.maxPatience;
+        let tip = 0;
+        if (patiencePct > 0.6) tip = Math.ceil(customer.drink.prepBonus * 1.5);
+        else if (patiencePct > 0.3) tip = customer.drink.prepBonus;
+
+        if (customer.pastry) {
+          tip += 3;
+          if (GameState.upgrades.pastryWarmer) tip += 3;
+        }
+
+        if (GameState.upgrades.autoRegister) tip += 2;
+
+        const baseEarnings = customer.drink.price + (customer.pastry ? customer.pastry.price : 0);
+        const totalEarned = baseEarnings + tip;
+
+        GameState.money += totalEarned;
+        GameState.dayRevenue += baseEarnings;
+        GameState.dayTips += tip;
+        GameState.soldToday += 1;
+        GameState.reputation = Math.min(5.0, GameState.reputation + 0.1);
+
+        showToast(`Tuyệt vời! +${totalEarned} Xu (${customer.pastry ? 'Combo Nước & Bánh' : customer.drink.name})`);
+        document.getElementById('cafeDialogue').textContent = `"${customer.name}: Quá ngon và vừa miệng, cảm ơn bạn nhé!"`;
+
+        GameState.activeCustomers = GameState.activeCustomers.filter(c => c.id !== customer.id);
+        GameState.selectedCustomerId = GameState.activeCustomers.length > 0 ? GameState.activeCustomers[0].id : null;
+
+        GameState.currentCup = [];
+        GameState.currentPastry = null;
+        renderCupAndPlatePreview();
+        renderIngredientGrid();
+        renderCustomers();
+        updateHeaderStats();
+        saveState();
+
+      } else {
+        sound.playFail();
+        GameState.reputation = Math.max(1.0, GameState.reputation - 0.2);
+
+        if (!isDrinkCorrect && !isPastryCorrect) {
+          showToast('Chưa đúng cả nước lẫn bánh! Mở Sổ Tay tra cứu nhé.');
+        } else if (!isDrinkCorrect) {
+          showToast('Sai công thức nước rồi! Hãy kiểm tra lại Sổ Tay.');
+        } else {
+          showToast(`Khách cần món bánh ${customer.pastry.name} kìa bạn!`);
+        }
+
+        document.getElementById('cafeDialogue').textContent = `"${customer.name}: Ơ hình như món này chưa đúng với món mình gọi..."`;
+        updateHeaderStats();
+      }
+    }
+
+    function tickGameTime() {
+      if (GameState.isPaused || !GameState.isOpen) return;
+
+      GameState.minute += Math.max(1, Math.round(3 * GameState.gameSpeed));
+      if (GameState.minute >= 60) {
+        GameState.minute = 0;
+        GameState.hour += 1;
+      }
+
+      for (let i = GameState.activeCustomers.length - 1; i >= 0; i--) {
+        const cust = GameState.activeCustomers[i];
+        cust.currentPatience -= (0.5 * GameState.gameSpeed);
+
+        if (cust.currentPatience <= 0) {
+          sound.playFail();
+          showToast(`${cust.name} đợi lâu nên rời đi! (-0.3 sao)`);
+          document.getElementById('cafeDialogue').textContent = `"${cust.name}: Chờ lâu quá, mình có việc bận phải đi rồi..."`;
+          GameState.reputation = Math.max(1.0, GameState.reputation - 0.3);
+          GameState.activeCustomers.splice(i, 1);
+          if (GameState.selectedCustomerId === cust.id) {
+            GameState.selectedCustomerId = GameState.activeCustomers.length > 0 ? GameState.activeCustomers[0].id : null;
+          }
+        }
+      }
+
+      if (Math.random() < (0.15 * GameState.gameSpeed)) {
+        spawnCustomer();
+      }
+
+      if (Math.random() < 0.05) {
+        const quote = DIALOGUES[Math.floor(Math.random() * DIALOGUES.length)];
+        document.getElementById('cafeDialogue').textContent = `"${quote}"`;
+      }
+
+      if (GameState.hour >= 18) {
+        endWorkDay();
+      }
+
+      renderCustomers();
+      updateHeaderStats();
+    }
+
+    function endWorkDay() {
+      GameState.isOpen = false;
+      document.getElementById('dayEndTitle').textContent = `KẾT THÚC NGÀY ${GameState.day}`;
+      document.getElementById('dayEndDrinks').textContent = `${GameState.soldToday} đơn`;
+      document.getElementById('dayEndRevenue').textContent = `+${GameState.dayRevenue} Xu`;
+      document.getElementById('dayEndTips').textContent = `+${GameState.dayTips} Xu`;
+
+      const rep = GameState.reputation;
+      const fullStars = Math.round(rep);
+      document.getElementById('dayEndReputation').textContent = `${'★'.repeat(fullStars)}${'☆'.repeat(5 - fullStars)} (${rep.toFixed(1)})`;
+
+      document.getElementById('modalDayEnd').classList.remove('hidden');
+      saveState();
+    }
+
+    function startNextDay() {
+      GameState.day += 1;
+      GameState.hour = 7;
+      GameState.minute = 0;
+      GameState.soldToday = 0;
+      GameState.dayRevenue = 0;
+      GameState.dayTips = 0;
+      GameState.activeCustomers = [];
+      GameState.currentCup = [];
+      GameState.currentPastry = null;
+      GameState.isOpen = true;
+
+      document.getElementById('modalDayEnd').classList.add('hidden');
+      renderCupAndPlatePreview();
+      renderIngredientGrid();
+      renderCustomers();
+      updateHeaderStats();
+      showToast(`Chào mừng Ngày ${GameState.day}! Bắt đầu mở cửa đón khách.`);
+      saveState();
+    }
+
+    function renderRecipeBook(filterGroup = 'all') {
+      const container = document.getElementById('recipesListContainer');
+      container.innerHTML = '';
+
+      if (filterGroup === 'pastry') {
+        Object.keys(PASTRIES).forEach(pKey => {
+          const item = PASTRIES[pKey];
+          const card = document.createElement('div');
+          card.className = 'p-3 rounded-2xl border flex items-center justify-between gap-2.5 bg-white border-stone-200 shadow-sm';
+          card.innerHTML = `
+            <div class="flex items-center gap-2.5">
+              <span class="text-2xl sm:text-3xl">${item.icon}</span>
+              <div>
+                <h4 class="font-bold text-stone-800 text-xs sm:text-sm">${item.name}</h4>
+                <p class="text-[11px] text-stone-500">${item.desc}</p>
+                <span class="text-[9px] bg-amber-100 text-amber-900 font-bold px-2 py-0.2 rounded-full inline-block mt-0.5">Bánh nướng sẵn</span>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-xs sm:text-sm font-bold text-amber-800 font-mono">${item.price} Xu</span>
+            </div>
+          `;
+          container.appendChild(card);
+        });
+        return;
+      }
+
+      const filtered = RECIPES.filter(r => (filterGroup === 'all' || r.group === filterGroup));
+
+      filtered.forEach(r => {
+        const card = document.createElement('div');
+        card.className = `p-2.5 sm:p-3 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-sm ${
+          r.unlocked ? 'bg-white border-stone-200' : 'bg-stone-100/80 border-dashed border-stone-300 opacity-70'
+        }`;
+
+        const ingBadges = r.ingredients.map(ingId => {
+          const ing = INGREDIENTS[ingId];
+          return `<span class="px-1.5 py-0.5 rounded-lg text-[9px] font-bold inline-flex items-center gap-1 border border-stone-200" style="background-color: ${ing.color}; color: ${ing.textColor}">
+            <i class="fa-solid ${ing.icon}"></i> ${ing.name}
+          </span>`;
+        }).join(' ');
+
+        card.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="text-2xl sm:text-3xl shrink-0">${r.icon}</span>
+            <div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h4 class="font-bold text-stone-800 text-xs sm:text-sm">${r.name}</h4>
+                ${r.unlocked 
+                  ? '<span class="text-[8.5px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded-full">Đang bán</span>' 
+                  : '<span class="text-[8.5px] bg-stone-200 text-stone-600 font-bold px-1.5 py-0.2 rounded-full"><i class="fa-solid fa-lock"></i> Chưa mở</span>'}
+              </div>
+              <p class="text-[11px] text-stone-500 mt-0.5">${r.desc}</p>
+              <div class="flex flex-wrap gap-1 mt-1">
+                ${ingBadges}
+              </div>
+            </div>
+          </div>
+          <div class="text-right shrink-0 w-full sm:w-auto flex sm:flex-col justify-between sm:justify-center border-t sm:border-0 border-stone-100 pt-1 sm:pt-0">
+            <span class="text-xs sm:text-sm font-bold text-cafe-accent font-mono">${r.price} Xu</span>
+            <div class="text-[9.5px] text-stone-400">Tip: +${r.prepBonus}</div>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    const UPGRADE_CATALOG = [
+      { id: 'pack_fruittea', name: 'Gói Trà Trái Cây Hot Trend', desc: 'Mở khóa: Trà Chanh Giã Tay & Trà Vải Hoa Hồng.', cost: 60, type: 'recipe_group', recipeIds: ['tra_chanh_gia_tay', 'tra_vai_hoa_hong'], icon: '🍋' },
+      { id: 'pack_milktea', name: 'Gói Trà Sữa Đậm Vị', desc: 'Mở khóa: Trà Thái Xanh Kem Cheese & Trà Lài Yến Mạch.', cost: 75, type: 'recipe_group', recipeIds: ['ts_thai_xanh_cheese', 'ts_lai_yen_mach'], icon: '🧀' },
+      { id: 'pack_special_coffee', name: 'Gói Cà Phê Đặc Sản', desc: 'Mở khóa: Cà Phê Cốt Dừa Đá Xay & Cold Brew Cam Vàng.', cost: 85, type: 'recipe_group', recipeIds: ['cf_dua', 'cold_brew_cam'], icon: '🥥' },
+      { id: 'pack_smoothies', name: 'Gói Sinh Tố & Đá Xay', desc: 'Mở khóa: Sinh Tố Bơ Dừa Sầu, Matcha Cookie & Cacao Dừa.', cost: 110, type: 'recipe_group', recipeIds: ['bo_dua_sau_rieng', 'matcha_cookie_ice', 'cacao_dua_ice'], icon: '🥑' },
+      { id: 'pack_healthy', name: 'Gói Healthy Thảo Mộc', desc: 'Mở khóa: Kombucha Lựu Đỏ & Trà Hoa Cúc Mật Ong.', cost: 95, type: 'recipe_group', recipeIds: ['kombucha_luu_do', 'tra_cuc_mat_ong'], icon: '🍷' },
+      { id: 'pack_premium_tea', name: 'Gói Trà Hoàng Gia', desc: 'Mở khóa: Ô Long Sữa Nướng & Trà Sen Vàng Macchiato.', cost: 130, type: 'recipe_group', recipeIds: ['olong_nuong', 'tra_sen_macchiato'], icon: '🔥' },
+      { id: 'pastry_warmer', name: 'Tủ Giữ Nóng Bánh', desc: 'Bánh luôn nóng giòn, tăng thêm +3 Xu tip cho mỗi Combo bánh!', cost: 90, type: 'pastry_warmer', icon: '🥐' },
+      { id: 'seating', name: 'Thêm Bàn Ghế Gỗ Vintage', desc: 'Đón thêm +1 khách cùng lúc tại quán.', cost: 80, type: 'seating', icon: '🪑' },
+      { id: 'lofi_speakers', name: 'Dàn Loa Đĩa Than Lofi', desc: 'Nhạc êm dịu, tăng độ kiên nhẫn của khách thêm 35%.', cost: 85, type: 'lofi', icon: '📻' },
+      { id: 'cash_register', name: 'Máy Tính Tiền Cảm Ứng', desc: 'Tự động nhận thêm +2 Xu tiền tip mỗi đơn phục vụ.', cost: 120, type: 'register', icon: '📠' }
+    ];
+
+    function renderUpgradesShop() {
+      const container = document.getElementById('upgradesListContainer');
+      container.innerHTML = '';
+      document.getElementById('shopCurrentCoins').textContent = GameState.money;
+
+      UPGRADE_CATALOG.forEach(upg => {
+        let isPurchased = false;
+        if (upg.type === 'recipe_group') {
+          isPurchased = upg.recipeIds.every(id => {
+            const r = RECIPES.find(item => item.id === id);
+            return r && r.unlocked;
+          });
+        } else if (upg.type === 'pastry_warmer') {
+          isPurchased = GameState.upgrades.pastryWarmer;
+        } else if (upg.type === 'lofi') {
+          isPurchased = GameState.upgrades.lofiSpeakers;
+        } else if (upg.type === 'register') {
+          isPurchased = GameState.upgrades.autoRegister;
+        } else if (upg.type === 'seating') {
+          isPurchased = (GameState.upgrades.cozySeating >= 3);
+        }
+
+        const canAfford = GameState.money >= upg.cost;
+
+        const card = document.createElement('div');
+        card.className = 'p-3 rounded-2xl bg-white border border-stone-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 shadow-sm';
+
+        card.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="text-2xl sm:text-3xl">${upg.icon}</span>
+            <div>
+              <h4 class="font-bold text-stone-800 text-xs sm:text-sm">${upg.name}</h4>
+              <p class="text-[11px] text-stone-500">${upg.desc}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2.5 shrink-0 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-0 border-stone-100 pt-1.5 sm:pt-0">
+            <span class="font-mono font-bold text-cafe-accent text-xs sm:text-sm">${upg.cost} Xu</span>
+            ${isPurchased 
+              ? '<span class="px-3 py-1 bg-stone-200 text-stone-600 rounded-xl text-xs font-bold"><i class="fa-solid fa-check"></i> Đã có</span>' 
+              : `<button class="btnBuyUpgrade px-3 py-1.5 rounded-xl text-xs font-bold transition shadow touch-btn ${
+                  canAfford 
+                    ? 'bg-cafe-green hover:bg-cafe-dark text-cafe-cream active:scale-95' 
+                    : 'bg-stone-300 text-stone-500 cursor-not-allowed'
+                }">Mua</button>`}
+          </div>
+        `;
+
+        if (!isPurchased && canAfford) {
+          const buyBtn = card.querySelector('.btnBuyUpgrade');
+          buyBtn.onclick = () => buyUpgrade(upg);
+        }
+
+        container.appendChild(card);
+      });
+    }
+
+    function buyUpgrade(upg) {
+      if (GameState.money < upg.cost) return;
+
+      GameState.money -= upg.cost;
+      sound.playCoin();
+
+      if (upg.type === 'recipe_group') {
+        upg.recipeIds.forEach(id => {
+          const r = RECIPES.find(item => item.id === id);
+          if (r) r.unlocked = true;
+        });
+      } else if (upg.type === 'pastry_warmer') {
+        GameState.upgrades.pastryWarmer = true;
+      } else if (upg.type === 'lofi') {
+        GameState.upgrades.lofiSpeakers = true;
+      } else if (upg.type === 'register') {
+        GameState.upgrades.autoRegister = true;
+      } else if (upg.type === 'seating') {
+        GameState.upgrades.cozySeating += 1;
+      }
+
+      showToast(`Đã mua: ${upg.name}!`);
+      renderUpgradesShop();
+      updateHeaderStats();
+      saveState();
+    }
+
+    function openRecipeModalForGroup(groupName = 'all') {
+      if (!GameState.isPaused) {
+        GameState.isPaused = true;
+        GameState.pausedByModal = true;
+      }
+
+      GameState.currentRecipeFilter = groupName;
+      document.querySelectorAll('.recipe-filter-btn').forEach(btn => {
+        if (btn.getAttribute('data-group') === groupName) {
+          btn.className = 'recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-cafe-green text-white shrink-0 touch-btn';
+        } else {
+          btn.className = 'recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn';
+        }
+      });
+
+      renderRecipeBook(groupName);
+      document.getElementById('modalRecipes').classList.remove('hidden');
+    }
+
+    function closeRecipeModal() {
+      document.getElementById('modalRecipes').classList.add('hidden');
+      if (GameState.pausedByModal) {
+        GameState.isPaused = false;
+        GameState.pausedByModal = false;
+      }
+    }
+
+    function switchMobileView(viewName) {
+      GameState.mobileActiveView = viewName;
+      const barSec = document.getElementById('sectionCraftingBar');
+      const queueSec = document.getElementById('sectionCustomerQueue');
+      const btnBar = document.getElementById('tabSwitchBar');
+      const btnQueue = document.getElementById('tabSwitchQueue');
+
+      if (viewName === 'crafting') {
+        barSec.classList.remove('hidden');
+        queueSec.classList.add('hidden');
+        btnBar.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl bg-cafe-green text-cafe-cream shadow flex items-center justify-center gap-1.5 transition';
+        btnQueue.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl text-stone-700 hover:bg-stone-100 flex items-center justify-center gap-1.5 transition';
+      } else {
+        barSec.classList.add('hidden');
+        queueSec.classList.remove('hidden');
+        btnQueue.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl bg-cafe-green text-cafe-cream shadow flex items-center justify-center gap-1.5 transition';
+        btnBar.className = 'flex-1 py-1.5 text-xs font-bold rounded-xl text-stone-700 hover:bg-stone-100 flex items-center justify-center gap-1.5 transition';
+      }
+    }
+
+    function handleResize() {
+      const isDesktop = window.innerWidth >= 1024;
+      const barSec = document.getElementById('sectionCraftingBar');
+      const queueSec = document.getElementById('sectionCustomerQueue');
+
+      if (isDesktop) {
+        barSec.classList.remove('hidden');
+        queueSec.classList.remove('hidden');
+      } else {
+        switchMobileView(GameState.mobileActiveView);
+      }
+    }
+
+    function setupEventListeners() {
+      window.addEventListener('resize', handleResize);
+
+      // Mobile Tab Switchers
+      document.getElementById('tabSwitchBar').onclick = () => switchMobileView('crafting');
+      document.getElementById('tabSwitchQueue').onclick = () => switchMobileView('queue');
+
+      // Audio toggle
+      document.getElementById('btnAudioToggle').onclick = () => {
+        sound.init();
+        const isMuted = sound.toggleMute();
+        const icon = document.getElementById('audioIcon');
+        if (isMuted) {
+          icon.className = 'fa-solid fa-volume-xmark text-rose-300';
+          showToast('Đã tắt âm thanh');
+        } else {
+          icon.className = 'fa-solid fa-volume-high text-cafe-sand';
+          sound.startLofiAmbient();
+          showToast('Đã bật nhạc Lofi ấm áp');
+        }
+      };
+
+      // Speed controller buttons
+      document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('.speed-btn').forEach(b => {
+            b.className = 'speed-btn px-2 py-0.5 rounded-lg text-[11px] font-bold text-stone-600 hover:text-stone-900 transition';
+          });
+          btn.className = 'speed-btn px-2 py-0.5 rounded-lg text-[11px] font-bold bg-cafe-green text-white transition';
+          GameState.gameSpeed = parseFloat(btn.getAttribute('data-speed'));
+          
+          if (GameState.gameSpeed === 0.5) showToast('Chế độ Chill: Khách chờ siêu lâu, thong thả nhé!');
+          else if (GameState.gameSpeed === 1.0) showToast('Chế độ Vừa: Nhịp điệu cân bằng.');
+          else showToast('Chế độ Nhanh: Thử thách phản xạ!');
+        };
+      });
+
+      // Start button
+      document.getElementById('btnStartShop').onclick = () => {
+        sound.init();
+        sound.startLofiAmbient();
+        document.getElementById('introScreen').classList.add('hidden');
+        document.getElementById('mainGameScreen').classList.remove('hidden');
+        GameState.isOpen = true;
+        spawnCustomer();
+        handleResize();
+        showToast('Quán nhỏ đã mở cửa! Chúc bạn một ngày buôn bán thuận lợi.');
+      };
+
+      // Crafting actions (Desktop and Mobile Buttons)
+      const handleResetCup = () => {
+        if (GameState.currentCup.length === 0 && !GameState.currentPastry) return;
+        sound.playFail();
+        GameState.currentCup = [];
+        GameState.currentPastry = null;
+        renderCupAndPlatePreview();
+        renderIngredientGrid();
+        showToast('Đã đổ sạch ly để pha lại.');
+      };
+
+      document.getElementById('btnResetCup').onclick = handleResetCup;
+      document.getElementById('btnResetCupMobile').onclick = handleResetCup;
+
+      document.getElementById('btnRemovePastry').onclick = () => {
+        GameState.currentPastry = null;
+        renderCupAndPlatePreview();
+        renderIngredientGrid();
+      };
+
+      document.getElementById('btnServeDrink').onclick = serveCurrentCup;
+      document.getElementById('btnServeDrinkMobile').onclick = serveCurrentCup;
+
+      // Ingredient tabs
+      document.querySelectorAll('.ing-tab-btn').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('.ing-tab-btn').forEach(b => {
+            b.className = 'ing-tab-btn px-2.5 py-1.5 rounded-xl font-bold bg-stone-200 text-stone-700 hover:bg-stone-300 shrink-0 touch-btn';
+          });
+          btn.className = 'ing-tab-btn px-2.5 py-1.5 rounded-xl font-bold bg-cafe-green text-white shrink-0 touch-btn';
+          GameState.currentTab = btn.getAttribute('data-cat');
+          renderIngredientGrid();
+        };
+      });
+
+      // Recipe modal buttons
+      const openRecipes = () => openRecipeModalForGroup('all');
+      document.getElementById('btnOpenRecipes').onclick = openRecipes;
+      document.getElementById('btnOpenRecipesMobile').onclick = openRecipes;
+      document.getElementById('btnCloseRecipes').onclick = closeRecipeModal;
+      document.getElementById('btnCloseRecipes2').onclick = closeRecipeModal;
+
+      document.querySelectorAll('.recipe-filter-btn').forEach(btn => {
+        btn.onclick = () => {
+          document.querySelectorAll('.recipe-filter-btn').forEach(b => {
+            b.className = 'recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-white text-stone-700 border border-stone-200 shrink-0 touch-btn';
+          });
+          btn.className = 'recipe-filter-btn px-2.5 py-1 rounded-xl text-xs font-bold bg-cafe-green text-white shrink-0 touch-btn';
+          GameState.currentRecipeFilter = btn.getAttribute('data-group');
+          renderRecipeBook(GameState.currentRecipeFilter);
+        };
+      });
+
+      // Upgrades modal
+      document.getElementById('btnDailyUpgrade').onclick = () => {
+        renderUpgradesShop();
+        document.getElementById('modalUpgrades').classList.remove('hidden');
+      };
+      document.getElementById('btnCloseUpgrades').onclick = () => {
+        document.getElementById('modalUpgrades').classList.add('hidden');
+      };
+      document.getElementById('btnCloseUpgrades2').onclick = () => {
+        document.getElementById('modalUpgrades').classList.add('hidden');
+      };
+
+      // Next Day Button
+      document.getElementById('btnStartNextDay').onclick = startNextDay;
+
+      // Pause button
+      document.getElementById('btnPauseGame').onclick = () => {
+        GameState.isPaused = !GameState.isPaused;
+        const btn = document.getElementById('btnPauseGame');
+        if (GameState.isPaused) {
+          btn.innerHTML = '<i class="fa-solid fa-play"></i> <span class="hidden xs:inline">Chơi</span>';
+          btn.className = 'px-2.5 py-1.5 bg-amber-200 text-cafe-woodDark rounded-xl text-[11px] sm:text-xs font-bold transition shrink-0 touch-btn';
+          showToast('Đã tạm dừng quán.');
+        } else {
+          btn.innerHTML = '<i class="fa-solid fa-pause"></i> <span class="hidden xs:inline">Nghỉ</span>';
+          btn.className = 'px-2.5 py-1.5 bg-stone-200 hover:bg-stone-300 text-stone-700 rounded-xl text-[11px] sm:text-xs font-bold transition shrink-0 touch-btn';
+          showToast('Tiếp tục mở quán.');
+        }
+      };
+
+      // Keyboard shortcuts
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          serveCurrentCup();
+        }
+        if (e.key === 'r' || e.key === 'R') {
+          handleResetCup();
+        }
+        if (e.key === 'b' || e.key === 'B') {
+          const modal = document.getElementById('modalRecipes');
+          if (modal.classList.contains('hidden')) {
+            openRecipeModalForGroup('all');
+          } else {
+            closeRecipeModal();
+          }
+        }
+        const num = parseInt(e.key);
+        if (!isNaN(num) && num >= 1 && num <= 8) {
+          if (GameState.currentTab === 'pastry') {
+            const keys = Object.keys(PASTRIES);
+            if (keys[num - 1]) selectPastry(keys[num - 1]);
+          } else {
+            const keys = Object.keys(INGREDIENTS).filter(k => INGREDIENTS[k].cat === GameState.currentTab);
+            if (keys[num - 1]) toggleIngredient(keys[num - 1]);
+          }
+        }
+        if (e.key === 'Escape') {
+          closeRecipeModal();
+          document.getElementById('modalUpgrades').classList.add('hidden');
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      loadSavedState();
+      updateHeaderStats();
+      renderIngredientGrid();
+      renderCupAndPlatePreview();
+      setupEventListeners();
+      handleResize();
+
+      setInterval(tickGameTime, 1000);
+    });
+  </script>
+</body>
+</html>
